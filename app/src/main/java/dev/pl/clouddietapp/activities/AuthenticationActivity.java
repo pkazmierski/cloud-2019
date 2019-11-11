@@ -1,4 +1,4 @@
-package dev.pl.clouddietapp;
+package dev.pl.clouddietapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,8 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.SignInUIOptions;
 import com.amazonaws.mobile.client.UserStateDetails;
-import com.amazonaws.mobile.client.UserStateListener;
+
+import dev.pl.clouddietapp.R;
 
 public class AuthenticationActivity extends AppCompatActivity {
 

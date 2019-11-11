@@ -1,4 +1,4 @@
-package dev.pl.clouddietapp;
+package dev.pl.clouddietapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import dev.pl.clouddietapp.R;
 import type.CreateUserDataInput;
 import type.UpdateUserDataInput;
 
