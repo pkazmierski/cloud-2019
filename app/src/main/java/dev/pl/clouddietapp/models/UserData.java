@@ -1,5 +1,6 @@
 package dev.pl.clouddietapp.models;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class UserData {
@@ -11,6 +12,18 @@ public class UserData {
     private int physicalActivity;
     private Gender gender;
     private String location;
+    private Preferences preferences;
+    private ArrayList<Food> fridgeContents;
+
+    public class Preferences {
+        private int maxSupermarketDistance;
+        private boolean isVegetarian;
+
+        public Preferences(int maxSupermarketDistance, boolean isVegetarian) {
+            this.maxSupermarketDistance = maxSupermarketDistance;
+            this.isVegetarian = isVegetarian;
+        }
+    }
 
     public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location) {
         this.username = username;
@@ -85,6 +98,22 @@ public class UserData {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(Preferences preferences) {
+        this.preferences = preferences;
+    }
+
+    public ArrayList<Food> getFridgeContents() {
+        return fridgeContents;
+    }
+
+    public void setFridgeContents(ArrayList<Food> fridgeContents) {
+        this.fridgeContents = fridgeContents;
     }
 
     @Override
