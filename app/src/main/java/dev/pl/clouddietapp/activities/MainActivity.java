@@ -1,8 +1,12 @@
 package dev.pl.clouddietapp.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +24,7 @@ import dev.pl.clouddietapp.models.Food;
 import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private List<ListUserDatasQuery.Item> userDataList = new ArrayList<>();
     private static int counter = 1;
@@ -28,13 +32,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//inflate your activity layout here!
+        @SuppressLint("InflateParams")
+        View contentView = inflater.inflate(R.layout.activity_main, null, false);
+        drawer.addView(contentView, 0);
 
         Logic.initAppSync(this);
 
-        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
+//        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
-        Logic.appSyncDb.getUserData(afterGettingUserData, null);
+//        Logic.appSyncDb.getUserData(afterGettingUserData, null);
     }
 
    private Runnable afterGettingUserData = () -> runOnUiThread(() -> {
