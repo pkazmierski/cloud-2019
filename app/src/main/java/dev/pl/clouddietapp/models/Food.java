@@ -5,12 +5,10 @@ import java.util.Objects;
 public class Food {
     private String name;
     private double amount;
-    private String unit;
 
-    public Food(String name, double amount, String unit) {
+    public Food(String name, double amount) {
         this.name = name;
         this.amount = amount;
-        this.unit = unit;
     }
 
     public String getName() {
@@ -27,14 +25,6 @@ public class Food {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     @Override
@@ -55,7 +45,6 @@ public class Food {
         return "Food{" +
                 "name='" + name + '\'' +
                 ", amount=" + amount +
-                ", unit='" + unit + '\'' +
                 '}';
     }
 }

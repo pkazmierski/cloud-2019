@@ -12,17 +12,11 @@ public class UserData {
     private int physicalActivity;
     private Gender gender;
     private String location;
-    private Preferences preferences;
-    private ArrayList<Food> fridgeContents;
+    private UserPreferences preferences = new UserPreferences();
+    private ArrayList<Food> fridgeContents = new ArrayList<>();
 
-    public class Preferences {
-        private int maxSupermarketDistance;
-        private boolean isVegetarian;
+    public UserData() {
 
-        public Preferences(int maxSupermarketDistance, boolean isVegetarian) {
-            this.maxSupermarketDistance = maxSupermarketDistance;
-            this.isVegetarian = isVegetarian;
-        }
     }
 
     public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location) {
@@ -100,11 +94,11 @@ public class UserData {
         this.location = location;
     }
 
-    public Preferences getPreferences() {
+    public UserPreferences getPreferences() {
         return preferences;
     }
 
-    public void setPreferences(Preferences preferences) {
+    public void setPreferences(UserPreferences preferences) {
         this.preferences = preferences;
     }
 
@@ -140,6 +134,8 @@ public class UserData {
                 ", physicalActivity=" + physicalActivity +
                 ", gender=" + gender +
                 ", location='" + location + '\'' +
+                ", preferences=" + preferences +
+                ", fridgeContents=" + fridgeContents +
                 '}';
     }
 }

@@ -6,8 +6,8 @@ import dev.pl.clouddietapp.models.Recipe;
 import dev.pl.clouddietapp.models.UserData;
 
 public class DataStore {
-    private static UserData userData;
-    private static ArrayList<Recipe> recipes;
+    private static UserData userData = new UserData();
+    private static ArrayList<Recipe> recipes = new ArrayList<>();
 
     public static UserData getUserData() {
         return userData;
