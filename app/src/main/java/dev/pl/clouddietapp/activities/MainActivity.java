@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +29,7 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private List<ListUserDatasQuery.Item> userDataList = new ArrayList<>();
     private static int counter = 1;
+    Button buttonLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,9 @@ public class MainActivity extends BaseActivity {
 //        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
 //        Logic.appSyncDb.getUserData(afterGettingUserData, null);
+
+        buttonLogout = (Button) findViewById(R.id.logout);
+
     }
 
    private Runnable afterGettingUserData = () -> runOnUiThread(() -> {
@@ -65,4 +70,9 @@ public class MainActivity extends BaseActivity {
 //
 //        counter++;
     });
+
+    public void logoutUser(View view) {
+        AWSMobileClient.getInstance().signOut();
+        finish();
+    }
 }
