@@ -32,7 +32,6 @@ public class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
-//    FloatingActionButton fab;
     NavigationView navigationView;
 
     @Override
@@ -42,7 +41,6 @@ public class BaseActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        fab = (FloatingActionButton) findViewById(R.id.fab);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -59,10 +57,11 @@ public class BaseActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_home) {
             startAnimatedActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else if (id == R.id.nav_fridge_contents) {
+            startAnimatedActivity(new Intent(getApplicationContext(), FridgeContentsActivity.class));
+        } else if (id == R.id.nav_add_fridge_items) {
+            startAnimatedActivity(new Intent(getApplicationContext(), AddFridgeItemActivity.class));
         }
-//        else if (id == R.id.nav_activity2) {
-//            startAnimatedActivity(new Intent(getApplicationContext(), SecondActivity.class));
-//        }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

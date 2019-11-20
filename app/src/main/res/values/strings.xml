@@ -1,17 +1,17 @@
 <resources>
-    <string name="app_name">Cloud Diet App</string>
-    <string name="title_activity_base">BaseActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string id="app_name">Cloud Diet App</string>
+    <string id="title_activity_base">BaseActivity</string>
+    <string id="navigation_drawer_open">Open navigation drawer</string>
+    <string id="navigation_drawer_close">Close navigation drawer</string>
+    <string id="nav_header_title">Android Studio</string>
+    <string id="nav_header_subtitle">android.studio@android.com</string>
+    <string id="nav_header_desc">Navigation header</string>
+    <string id="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string id="menu_home">Home</string>
+    <string id="menu_gallery">Gallery</string>
+    <string id="menu_slideshow">Slideshow</string>
+    <string id="menu_tools">Tools</string>
+    <string id="menu_share">Share</string>
+    <string id="menu_send">Send</string>
 </resources>

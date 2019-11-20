@@ -15,11 +15,24 @@ public class UserData {
     private UserPreferences preferences = new UserPreferences();
     private ArrayList<Food> fridgeContents = new ArrayList<>();
 
+    public UserData(UserData oldUserData) {
+        this.username = new String(oldUserData.username);
+        this.fullName = new String(oldUserData.fullName);
+        this.age = oldUserData.age;
+        this.heightInCm = oldUserData.heightInCm;
+        this.weight = oldUserData.weight;
+        this.physicalActivity = oldUserData.physicalActivity;
+        this.gender = oldUserData.gender;
+        this.location = new String(oldUserData.location);
+        this.preferences = new UserPreferences(oldUserData.preferences);
+        this.fridgeContents = new ArrayList(oldUserData.fridgeContents);
+    }
+
     public UserData() {
 
     }
 
-    public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location) {
+    public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location, UserPreferences preferences, ArrayList<Food> fridgeContents) {
         this.username = username;
         this.fullName = fullName;
         this.age = age;
@@ -28,6 +41,8 @@ public class UserData {
         this.physicalActivity = physicalActivity;
         this.gender = gender;
         this.location = location;
+        this.preferences = preferences;
+        this.fridgeContents = fridgeContents;
     }
 
     public String getUsername() {

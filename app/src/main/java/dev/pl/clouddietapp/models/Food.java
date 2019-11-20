@@ -3,20 +3,20 @@ package dev.pl.clouddietapp.models;
 import java.util.Objects;
 
 public class Food {
-    private String name;
+    private String id;
     private double amount;
 
-    public Food(String name, double amount) {
-        this.name = name;
+    public Food(String id, double amount) {
+        this.id = id;
         this.amount = amount;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public double getAmount() {
@@ -32,18 +32,18 @@ public class Food {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Food food = (Food) o;
-        return name.equals(food.name);
+        return id.equals(food.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Food{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
                 ", amount=" + amount +
                 '}';
     }

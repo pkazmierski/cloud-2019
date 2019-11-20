@@ -4,6 +4,11 @@ public class UserPreferences {
     private int maxSupermarketDistance;
     private boolean isVegetarian;
 
+    public UserPreferences(UserPreferences oldUserPreferences) {
+        this.maxSupermarketDistance = oldUserPreferences.maxSupermarketDistance;
+        this.isVegetarian = oldUserPreferences.isVegetarian;
+    }
+
     public UserPreferences(int maxSupermarketDistance, boolean isVegetarian) {
         this.maxSupermarketDistance = maxSupermarketDistance;
         this.isVegetarian = isVegetarian;

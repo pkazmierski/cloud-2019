@@ -1,8 +1,8 @@
 <resources>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style id="AppTheme.NoActionBar">
+        <item id="windowActionBar">false</item>
+        <item id="windowNoTitle">true</item>
 
     </style>
 </resources>

@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.pl.clouddietapp">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-
+    <uses-permission android:id="android.permission.INTERNET" />
+    <uses-permission android:id="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:id="android.permission.WAKE_LOCK" />
+    <uses-permission android:id="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:id="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:id="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,24 +18,39 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
         <activity
-            android:name=".activities.BaseActivity"
+            android:id=".activities.AddFridgeItemActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:id=".activities.FridgeContentsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:id=".activities.PreferenceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:id=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
+        <activity
+            android:id=".activities.BaseActivity"
             android:label="@string/title_activity_base"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
 
-        <activity android:name=".activities.AuthenticationActivity">
+        <activity android:id=".activities.AuthenticationActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:id="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:id="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+
+
+        <service android:id="org.eclipse.paho.android.service.MqttService" />
+
     </application>
 
 </manifest>

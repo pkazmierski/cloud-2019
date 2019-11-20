@@ -1,28 +1,29 @@
 package dev.pl.clouddietapp.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.amazonaws.amplify.generated.graphql.CreateFoodDefinitionMutation;
 import com.amazonaws.amplify.generated.graphql.ListUserDatasQuery;
-import com.amazonaws.mobile.client.AWSMobileClient;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import dev.pl.clouddietapp.R;
-import dev.pl.clouddietapp.data.AppSyncDb;
 import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
-import dev.pl.clouddietapp.models.Food;
-import dev.pl.clouddietapp.models.UserData;
-import dev.pl.clouddietapp.models.UserPreferences;
+import type.CreateFoodDefinitionInput;
+
+import static dev.pl.clouddietapp.logic.Logic.appSyncClient;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -40,6 +41,9 @@ public class MainActivity extends BaseActivity {
         drawer.addView(contentView, 0);
 
         Logic.initAppSync(this);
+
+        addNewFoodDefinitions(milk2Percent);
+        addNewFoodDefinitions(cornFlakes);
 
 //        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
@@ -65,4 +69,33 @@ public class MainActivity extends BaseActivity {
 //
 //        counter++;
     });
+
+    private CreateFoodDefinitionInput cornFlakes = CreateFoodDefinitionInput.builder()
+            .name("Corn Flakes")
+            .unit("kg")
+            .build();
+
+    private CreateFoodDefinitionInput milk2Percent = CreateFoodDefinitionInput.builder()
+            .name("Milk 2% fat")
+            .unit("l")
+            .build();
+
+    private void addNewFoodDefinitions(CreateFoodDefinitionInput createFoodDefinitionInput) {
+        GraphQLCall.Callback<CreateFoodDefinitionMutation.Data> createFoodDefinitionMutationCallback = new GraphQLCall.Callback<CreateFoodDefinitionMutation.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<CreateFoodDefinitionMutation.Data> response) {
+                Log.d(TAG, "addnewfood: " + response.errors().toString());
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("ERROR", e.toString());
+            }
+        };
+
+        appSyncClient.mutate(CreateFoodDefinitionMutation.builder()
+                .input(createFoodDefinitionInput)
+                .build())
+                .enqueue(createFoodDefinitionMutationCallback);
+    }
 }
