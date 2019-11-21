@@ -64,19 +64,6 @@ public class AddFridgeItemActivity extends BaseActivity {
 ////            newFridgeContents.add(new Food(foodDefinition.getId(), ));
 //        }
 
-
-        newUserData.setFridgeContents();
-
-        Logic.appSyncDb.setUserData();
-
-
-
-
-
-
-        DataStore.getUserData().setFridgeContents();
-    }
-
     private Runnable afterFoodDefinitionsSuccess = () -> runOnUiThread(() ->
             adapter.notifyDataSetChanged());
 
