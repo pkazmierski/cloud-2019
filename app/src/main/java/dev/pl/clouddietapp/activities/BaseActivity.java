@@ -59,8 +59,6 @@ public class BaseActivity extends AppCompatActivity
             startAnimatedActivity(new Intent(getApplicationContext(), MainActivity.class));
         } else if (id == R.id.nav_fridge_contents) {
             startAnimatedActivity(new Intent(getApplicationContext(), FridgeContentsActivity.class));
-        } else if (id == R.id.nav_add_fridge_items) {
-            startAnimatedActivity(new Intent(getApplicationContext(), AddFridgeItemActivity.class));
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

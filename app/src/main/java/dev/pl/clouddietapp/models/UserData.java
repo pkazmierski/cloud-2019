@@ -32,6 +32,14 @@ public class UserData {
 
     }
 
+    public Food getFoodById(String foodId) {
+        for(Food food : fridgeContents) {
+            if(food.getId().equals(foodId))
+                return food;
+        }
+        return null;
+    }
+
     public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location, UserPreferences preferences, ArrayList<Food> fridgeContents) {
         this.username = username;
         this.fullName = fullName;

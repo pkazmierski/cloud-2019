@@ -36,4 +36,12 @@ public class DataStore {
         DataStore.foodDefinitions.clear();
         DataStore.foodDefinitions.addAll(foodDefinitions);
     }
+
+    public static FoodDefinition getFoodDefinitionById(String foodId) {
+        for(FoodDefinition foodDefinition : foodDefinitions) {
+            if(foodDefinition.getId().equals(foodId))
+                return foodDefinition;
+        }
+        return null;
+    }
 }

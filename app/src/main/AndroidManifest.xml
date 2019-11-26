@@ -20,9 +20,6 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".activities.AddFridgeItemActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.FridgeContentsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
