@@ -1,11 +1,19 @@
 <resources>
     <string name="app_name">Cloud Diet App</string>
 
+    <string name="name">Name</string>
+    <string name="email">Email</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="signin">You are signed in</string>
+    <string name="register">Register</string>
+    <string name="register_link">Register here</string>
+    <string name="verify">Verify</string>
+    <string name="verification_code">Enter verification code</string>
 
     <string name="title_activity_base">BaseActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

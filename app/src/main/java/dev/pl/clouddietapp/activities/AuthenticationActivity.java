@@ -24,16 +24,17 @@ public class AuthenticationActivity extends AppCompatActivity {
     private final String TAG = AuthenticationActivity.class.getSimpleName();
     Button buttonLogin;
     EditText usrname, passwrd;
-    TextView text;
+    TextView text, registerLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        usrname = (EditText) findViewById(R.id.signUpUsername);
-        passwrd = (EditText) findViewById(R.id.signUpPassword);
+        usrname = (EditText) findViewById(R.id.signInUsername);
+        passwrd = (EditText) findViewById(R.id.signInPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        registerLink = (TextView) findViewById(R.id.registerLink);
 
     }
 
@@ -86,21 +87,23 @@ public class AuthenticationActivity extends AppCompatActivity {
         AWSMobileClient.getInstance().signIn(username, password, null, new Callback<SignInResult>() {
             @Override
             public void onResult(final SignInResult signInResult) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "Sign-in callback state: " + signInResult.getSignInState());
-                        switch (signInResult.getSignInState()) {
-                            case DONE:
-                                Toast.makeText(getApplicationContext(),"Sign-in done.", Toast.LENGTH_SHORT).show();
-                                break;
-                            case NEW_PASSWORD_REQUIRED:
-                                Toast.makeText(getApplicationContext(),"Please confirm sign-in with new password.", Toast.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                Toast.makeText(getApplicationContext(),"Unsupported sign-in confirmation: " + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
-                                break;
-                        }
+                runOnUiThread(() -> {
+                    Log.d(TAG, "Sign-in callback state: " + signInResult.getSignInState());
+                    switch (signInResult.getSignInState()) {
+                        case DONE:
+                            Toast.makeText(getApplicationContext(),"Sign-in done.", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(AuthenticationActivity.this, MainActivity.class);
+                            startActivity(i);
+                            break;
+                        case PASSWORD_VERIFIER:
+                            Toast.makeText(getApplicationContext(),"Enter correct password.", Toast.LENGTH_SHORT).show();
+                            break;
+                        case NEW_PASSWORD_REQUIRED:
+                            Toast.makeText(getApplicationContext(),"Please confirm sign-in with new password.", Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            Toast.makeText(getApplicationContext(),"Unsupported sign-in confirmation: " + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
+                            break;
                     }
                 });
             }
@@ -111,5 +114,10 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void registerLink(View view) {
+        Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(i);
     }
 }
