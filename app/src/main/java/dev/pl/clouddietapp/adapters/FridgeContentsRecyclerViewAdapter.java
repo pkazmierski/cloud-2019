@@ -47,36 +47,41 @@ public class FridgeContentsRecyclerViewAdapter extends RecyclerView.Adapter<Frid
     @Override
     //change what layout look like
     public void onBindViewHolder(@NonNull FridgeContentsRecyclerViewAdapter.ViewHolder holder, final int position) {
+        holder.foodAmountTxt.setTag(position);
         FoodDefinition foodDefinition = foodDefinitions.get(position);
         //todo food może być null, jezeli user został dodany do bazy danych, ale user go jeszcze nie ma
-        Food food = DataStore.getUserData().getFoodById(foodDefinition.getId());
+        if (DataStore.getUserData().getFoodById(foodDefinition.getId()) == null) {
+            DataStore.getUserData().getFridgeContents().add(new Food(foodDefinition.getId(), 0.0));
+        }
+        final Food food = DataStore.getUserData().getFoodById(foodDefinition.getId());
 
         holder.foodNameTxt.setText(foodDefinition.getName());
         holder.foodAmountTxt.setText(String.valueOf(food.getAmount()));
         holder.foodUnitTxt.setText(foodDefinition.getUnit());
 
-        holder.foodAmountTxt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().equals(""))
-                    food.setAmount(0);
-                else {
-                    Log.d(TAG, "afterTextChanged: food: " + counter + "\n" + food.toString() + "\nfoodDef: " + foodDefinition + "\nnewText: " + s.toString() + "\narray: " + foodDefinitions.toString());
-                    food.setAmount(Double.parseDouble(s.toString()));
-                    counter++;
-                }
-            }
-        });
+//        holder.foodAmountTxt.addTextChangedListener(new TextWatcher() {
+//            boolean isOnTextChanged = false;
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (s.toString().equals(""))
+//                    food.setAmount(0);
+//                else {
+//                    Log.d(TAG, "afterTextChanged: food: " + counter + "\n" + food.toString() + "\nfoodDef: " + foodDefinition + "\nnewText: " + s.toString() + "\narray: " + foodDefinitions.toString());
+//                    food.setAmount(Double.parseDouble(s.toString()));
+//                    counter++;
+//                }
+//            }
+//        });
         //todo listener na amount: niech ten amount sie od razu zapisuje
     }
 
@@ -98,6 +103,36 @@ public class FridgeContentsRecyclerViewAdapter extends RecyclerView.Adapter<Frid
             foodAmountTxt = itemView.findViewById(R.id.foodAmountTxt);
             foodCardTxt = itemView.findViewById(R.id.foodCard);
             foodUnitTxt = itemView.findViewById(R.id.foodUnitTxt);
+            foodAmountTxt.addTextChangedListener(new TextWatcher() {
+                boolean isOnTextChanged = false;
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    Log.d(TAG, "afterTextChanged: tssffdsfsfdsfds");
+                    if (s.toString().equals("")) {
+                        if (foodAmountTxt.getTag() != null) {
+                            String id = foodDefinitions.get((int) foodAmountTxt.getTag()).getId();
+                            DataStore.getUserData().getFoodById(id).setAmount(0.0);
+                        }
+                    } else {
+                        if (foodAmountTxt.getTag() != null) {
+                            String id = foodDefinitions.get((int) foodAmountTxt.getTag()).getId();
+                            Food food = DataStore.getUserData().getFoodById(id);
+                            Log.d(TAG, "afterTextChanged: food: " + counter + "\n" + food.toString() + "\nfoodDef: " + foodDefinitions.get((int) foodAmountTxt.getTag()) + "\nnewText: " + s.toString() + "\narray: " + foodDefinitions.toString());
+                            food.setAmount(Double.valueOf(s.toString()));
+                        }
+                    }
+                }
+            });
         }
     }
 
