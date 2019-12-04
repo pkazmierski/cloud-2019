@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.RegisterActivity"></activity>
+        <activity android:name=".activities.RegisterActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activities.BaseActivity"
             android:label="@string/title_activity_base"

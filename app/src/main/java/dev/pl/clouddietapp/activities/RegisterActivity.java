@@ -115,9 +115,9 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.i(TAG, userStateDetails.getUserState().toString());
                 switch (userStateDetails.getUserState()){
                     case SIGNED_IN:
+                        finish();
                         Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                         startActivity(i);
-                        RegisterActivity.this.finish();
                         break;
                     case SIGNED_OUT:
                         signUpUser(username,password,attributes);
@@ -196,6 +196,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"Confirm sign-up with: " + details.getDestination(), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(),"Sign-up done.", Toast.LENGTH_SHORT).show();
+                            finish();
                             Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                             startActivity(i);
                         }
