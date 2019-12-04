@@ -13,6 +13,11 @@
             android:id="@+id/nav_fridge_contents"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Fridge contents" />
+
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@drawable/ic_menu_map"
+            android:title="Nearby gyms" />
     </group>
 
     <item android:title="Other">
