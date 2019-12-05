@@ -5,9 +5,6 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -29,33 +26,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import dev.pl.clouddietapp.R;
@@ -63,7 +45,7 @@ import dev.pl.clouddietapp.data.GetNearbyPlacesData;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    public static final String FIND_GYMS = "Find Gyms";
+    public static final String FIND_SUPERMARKETS = "Find Supermarkets";
     public static final String CLEAR_MAP = "Clear Map";
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient; //for fetching current location of the device
@@ -233,10 +215,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 }, 3000);
                 */
-                if (btnFind.getText().equals(FIND_GYMS)) {
+                if (btnFind.getText().equals(FIND_SUPERMARKETS)) {
                     Log.d("onClick", "Button is Clicked");
                     mMap.clear();
-                    String url = getUrl(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), "gym");
+                    String url = getUrl(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), "supermarket");
                     Object[] DataTransfer = new Object[2];
                     DataTransfer[0] = mMap;
                     DataTransfer[1] = url;
@@ -245,11 +227,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     getNearbyPlacesData.execute(DataTransfer);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-                    Toast.makeText(MapActivity.this, "Nearby Gyms", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, "Nearby Supermarkets", Toast.LENGTH_LONG).show();
                     btnFind.setText(CLEAR_MAP);
                 } else{
                     mMap.clear();
-                    btnFind.setText(FIND_GYMS);
+                    btnFind.setText(FIND_SUPERMARKETS);
                 }
             }
         });
