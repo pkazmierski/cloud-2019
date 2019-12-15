@@ -3,6 +3,7 @@ package dev.pl.clouddietapp.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,6 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private List<ListUserDatasQuery.Item> userDataList = new ArrayList<>();
     private static int counter = 1;
-    Button buttonLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class MainActivity extends BaseActivity {
 
 //        Logic.appSyncDb.getUserData(afterGettingUserData, null);
 
-        buttonLogout = (Button) findViewById(R.id.logout);
 
     }
 
@@ -70,9 +69,9 @@ public class MainActivity extends BaseActivity {
 //
 //        counter++;
     });
+   /* @Override
+    public void onBackPressed()
+    {
 
-    public void logoutUser(View view) {
-        AWSMobileClient.getInstance().signOut();
-        finish();
-    }
+    }*/
 }

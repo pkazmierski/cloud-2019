@@ -120,4 +120,9 @@ public class AuthenticationActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
         startActivity(i);
     }
+
+    public void forgotPassword(View view) {
+        Intent i = new Intent(getApplicationContext(), ResetPasswordActivity.class);
+        startActivity(i);
+    }
 }
