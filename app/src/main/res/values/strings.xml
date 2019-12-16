@@ -35,6 +35,10 @@
     <string name="verification_code">Enter verification code</string>
     <string name="conf_code">Enter confirmation code</string>
     <string name="pass">Enter new password</string>
+    <string name="confirm_delete">Are you sure that you want to delete your account?</string>
+    <string name="del">Yes, I want to delete my account.</string>
+    <string name="dele">Delete</string>
+    <string name="progress">Your data is being deleted...</string>
 
     <string name="title_activity_base">BaseActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

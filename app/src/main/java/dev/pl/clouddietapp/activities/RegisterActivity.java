@@ -28,6 +28,7 @@ import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.results.SignUpResult;
 import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails;
+import com.amazonaws.services.cognitoidentityprovider.model.UsernameExistsException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,10 +100,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         });
 
         password1.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!PASSWORD_PATTERN.matcher(password1.getText()).matches()) {
-                password1.setError("Password must contain at least 10 characters.");
-            }
-            if (password1.getText().chars().count() < 10) {
+            if (!PASSWORD_PATTERN.matcher(password1.getText()).matches() && password1.getText().toString().length() < 10) {
+                Toast.makeText(getApplicationContext(), "Password must contain at least 10 characters.", Toast.LENGTH_SHORT).show();
                 password1.setError("Password must contain at least 10 characters.");
             }
         });
@@ -232,6 +231,15 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void onError(Exception e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (e.getClass().getSimpleName().equals("UsernameExistsException")){
+                            Toast.makeText(getApplicationContext(),"User already exists.", Toast.LENGTH_SHORT).show();
+                        } else if (e.getClass().getSimpleName().equals("InvalidParameterException")){
+                            Toast.makeText(getApplicationContext(),"Incorrect attributes values and/or password must contain at least 10 characters.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.e(TAG, "Sign-up error", e);
             }
         });
@@ -296,6 +304,13 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void onError(Exception e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (e.getClass().getSimpleName().equals("CodeMismatchException")){
+                            Toast.makeText(getApplicationContext(),"Invalid verification code provided, please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.e(TAG, "Confirm sign-up error", e);
             }
         });

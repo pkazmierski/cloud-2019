@@ -71,10 +71,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         });
 
         password.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!PASSWORD_PATTERN.matcher(password.getText()).matches()) {
-                password.setError("Password must contain at least 10 characters.");
-            }
-            if (password.getText().chars().count() < 10) {
+            if (!PASSWORD_PATTERN.matcher(password.getText()).matches() && password.getText().toString().length() < 10) {
+                Toast.makeText(getApplicationContext(), "Password must contain at least 10 characters.", Toast.LENGTH_SHORT).show();
                 password.setError("Password must contain at least 10 characters.");
             }
         });
@@ -119,7 +117,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         Log.d(TAG, "forgot password state: " + result.getState());
                         switch (result.getState()) {
                             case CONFIRMATION_CODE:
-                                Toast.makeText(getApplicationContext(),"Confirmation code is sent to email to reset password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Confirmation code is sent to email to reset password.", Toast.LENGTH_SHORT).show();
                                 updateUI();
                                 break;
                             default:
@@ -132,6 +130,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
+                if (e.getClass().getSimpleName().equals("UserNotFoundException")){
+                    Toast.makeText(getApplicationContext(),"Username not found.", Toast.LENGTH_SHORT).show();
+                }
                 Log.e(TAG, "forgot password error", e);
             }
         });
@@ -182,6 +183,15 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (e.getClass().getSimpleName().equals("InvalidParameterException")){
+                            Toast.makeText(getApplicationContext(),"Invalid verification code and/or password must contain at least 10 characters.", Toast.LENGTH_SHORT).show();
+                        } else if (e.getClass().getSimpleName().equals("CodeMismatchException")){
+                            Toast.makeText(getApplicationContext(),"Invalid verification code provided, please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.e(TAG, "forgot password error", e);
             }
         });

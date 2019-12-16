@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserState;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.results.SignInResult;
 
@@ -35,6 +36,24 @@ public class AuthenticationActivity extends AppCompatActivity {
         passwrd = (EditText) findViewById(R.id.signInPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         registerLink = (TextView) findViewById(R.id.registerLink);
+
+        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+
+            @Override
+            public void onResult(UserStateDetails userStateDetails) {
+                Log.i(TAG, userStateDetails.getUserState().toString());
+                if (userStateDetails.getUserState() == UserState.SIGNED_IN) {
+                    finish();
+                    Intent i = new Intent(AuthenticationActivity.this, MainActivity.class);
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        });
 
     }
 
@@ -110,6 +129,17 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (e.getClass().getSimpleName().equals("UserNotFoundException")){
+                            Toast.makeText(getApplicationContext(),"User does not exist.", Toast.LENGTH_SHORT).show();
+                        } else if (e.getClass().getSimpleName().equals("NotAuthorizedException")){
+                            Toast.makeText(getApplicationContext(),"Incorrect username or password.", Toast.LENGTH_SHORT).show();
+                        } else if (e.getClass().getSimpleName().equals("UserNotConfirmedException")){
+                            Toast.makeText(getApplicationContext(),"User is not confirmed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.e(TAG, "Sign-in error", e);
             }
         });

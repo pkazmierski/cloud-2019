@@ -71,19 +71,6 @@ public class BaseActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-
-                    @Override
-                    public void onResult(UserStateDetails userStateDetails) {
-                        Log.i("INIT", "onResult: " + userStateDetails.getUserState());
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("INIT", "Initialization error.", e);
-                    }
-                }
-        );
 
     }
 
@@ -98,8 +85,7 @@ public class BaseActivity extends AppCompatActivity
             finishAffinity();
             startActivity(new Intent(this, AuthenticationActivity.class));
         } else if (id == R.id.nav_delete) {
-            AlertDialog diaBox = AskOption();
-            diaBox.show();
+            startActivity(new Intent(this, DeleteAccountActivity.class));
         }
 //        else if (id == R.id.nav_activity2) {
 //            startAnimatedActivity(new Intent(getApplicationContext(), SecondActivity.class));
@@ -115,55 +101,4 @@ public class BaseActivity extends AppCompatActivity
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
-    private AlertDialog AskOption()
-    {
-        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
-                .setTitle("Delete Account")
-                .setMessage("Do you want to delete your account?")
-
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        deleteAccount();
-                        dialog.dismiss();
-                    }
-
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-
-                    }
-                })
-                .create();
-
-        return myQuittingDialogBox;
-    }
-
-    protected void deleteAccount(){
-
-        final Map<String, String> attributes = new HashMap<>();
-        attributes.put("email", "empty@email.com");
-        attributes.put("custom:name", " ");
-        attributes.put("custom:age", "9");
-        attributes.put("custom:height", "0");//custom:height
-        attributes.put("custom:weight", "0");//custom:weight
-        attributes.put("custom:physicalActivity", " ");//custom:physicalActivity
-        attributes.put("custom:gender", "0");//custom:gender (0,1)
-        //custom:location
-
-        AWSMobileClient.getInstance().updateUserAttributes(attributes, new Callback<List<UserCodeDeliveryDetails>>() {
-            @Override
-            public void onResult(List<UserCodeDeliveryDetails> result) {
-                Toast.makeText(getApplicationContext(),"Your data was deleted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                //Toast.makeText(getApplicationContext(),"Delete error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 }
