@@ -52,30 +52,30 @@ public class DeleteAccountActivity extends AppCompatActivity {
         bar.setVisibility(View.VISIBLE);
         AWSConfiguration awsConfiguration = AWSMobileClient.getInstance().getConfiguration();
         CognitoUserPool userpool = new CognitoUserPool(this, awsConfiguration); // CognitoUserPool object
-        GenericHandler genericHandler = new GenericHandler() {
+        GenericHandler logoutHandler = new GenericHandler() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Log.e("GLOBAL_LOGOUT", exception.getMessage());
+            }
+        };
+        GenericHandler deleteHandler = new GenericHandler() {
             @Override
             public void onSuccess() {
                 Toast.makeText(getApplicationContext(),"Your data was deleted", Toast.LENGTH_SHORT).show();
+                userpool.getCurrentUser().globalSignOutInBackground(logoutHandler);
             }
 
             @Override
             public void onFailure(Exception exception) {
-
+                Log.e("DELETE_USER", exception.getMessage());
             }
         };
-        userpool.getCurrentUser().deleteUserInBackground(genericHandler);
-        GenericHandler genericHandler1 = new GenericHandler() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getApplicationContext(),"You were signed out", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-
-            }
-        };
-        userpool.getCurrentUser().globalSignOutInBackground(genericHandler1);
+        userpool.getCurrentUser().deleteUserInBackground(deleteHandler);
 
         AWSMobileClient.getInstance().signOut();
         finishAffinity();
