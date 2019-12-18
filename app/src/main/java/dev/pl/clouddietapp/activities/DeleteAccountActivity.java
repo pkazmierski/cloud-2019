@@ -63,8 +63,20 @@ public class DeleteAccountActivity extends AppCompatActivity {
 
             }
         };
-        userpool.getCurrentUser().globalSignOutInBackground(genericHandler);
         userpool.getCurrentUser().deleteUserInBackground(genericHandler);
+        GenericHandler genericHandler1 = new GenericHandler() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(getApplicationContext(),"You were signed out", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+
+            }
+        };
+        userpool.getCurrentUser().globalSignOutInBackground(genericHandler1);
+
         AWSMobileClient.getInstance().signOut();
         finishAffinity();
         startActivity(new Intent(this, AuthenticationActivity.class));
