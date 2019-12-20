@@ -18,6 +18,11 @@
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_menu_map"
             android:title="Nearby supermarkets" />
+<!--Testing location picker for login-->
+<!--        <item-->
+<!--            android:id="@+id/nav_test"-->
+<!--            android:icon="@drawable/ic_menu_map"-->
+<!--            android:title="Test" />-->
     </group>
 
     <item android:title="Other">

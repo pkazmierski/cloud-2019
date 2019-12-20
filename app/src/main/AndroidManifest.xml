@@ -37,6 +37,11 @@
             android:name=".activities.MapActivity"
             android:label="MapActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".activities.PickLocationActivity"
+            android:label="PickLocationActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.BaseActivity"
             android:label="@string/title_activity_base"
@@ -44,6 +49,10 @@
 
         <activity android:name=".activities.PermissionActivity"
             android:label="PermissionActivity"/>
+
+        <activity android:name=".activities.LocationPermissionActivity"
+            android:label="PermissionActivity"/>
+
 
         <activity android:name=".activities.AuthenticationActivity">
             <intent-filter>
