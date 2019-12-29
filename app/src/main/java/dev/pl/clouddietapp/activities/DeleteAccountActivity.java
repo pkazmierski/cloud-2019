@@ -1,9 +1,5 @@
 package dev.pl.clouddietapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import dev.pl.clouddietapp.R;
-
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +9,14 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.Callback;
-import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
+
+import dev.pl.clouddietapp.R;
 
 public class DeleteAccountActivity extends AppCompatActivity {
 
