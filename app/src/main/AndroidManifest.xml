@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -18,20 +22,60 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".Calculator"></activity>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBQfaiHQGQvpGe0v2Bof6_PlpN621-1Nrk"/>
+        <activity
+            android:name=".activities.FridgeContentsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.PreferenceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.MapActivity"
+            android:label="MapActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <activity
+            android:name=".activities.PickLocationActivity"
+            android:label="PickLocationActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.DeleteAccountActivity"
+            android:noHistory="true"/>
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.BaseActivity"
+            android:label="@string/title_activity_base"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".AuthenticationActivity">
+        <activity android:name=".activities.PermissionActivity"
+            android:label="PermissionActivity"/>
+
+        <activity android:name=".activities.LocationPermissionActivity"
+            android:label="PermissionActivity"/>
+
+
+        <activity
+            android:name=".activities.AuthenticationActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" />
+
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
     </application>
 
 </manifest>
