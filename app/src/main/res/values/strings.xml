@@ -62,4 +62,5 @@
     <string name="your_bmr_is">Your BMR is</string>
     <string name="user_data">User data</string>
     <string name="max_distance_to_the_supermarket">Max distance to the supermarket</string>
+    <string name="done">Done</string>
 </resources>

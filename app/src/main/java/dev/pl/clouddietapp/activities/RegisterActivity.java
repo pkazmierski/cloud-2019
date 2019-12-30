@@ -1,8 +1,6 @@
 package dev.pl.clouddietapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import dev.pl.clouddietapp.R;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,16 +20,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.results.SignUpResult;
 import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails;
-import com.amazonaws.services.cognitoidentityprovider.model.UsernameExistsException;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import dev.pl.clouddietapp.R;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -46,6 +47,9 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     ScrollView scroll;
     String active;
     String gender = "1";
+
+    LatLng location = null;
+
     private static final String TAG = "RegisterActivity";
 
     private static final Pattern PASSWORD_PATTERN =
@@ -110,12 +114,31 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         active = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(), active, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(parent.getContext(), active, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void getLocationBtn(View view) {
+        Intent i = new Intent(this, PickLocationActivity.class);
+        startActivityForResult(i, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                location = data.getParcelableExtra("location");
+                Log.d(TAG, "gotLocation: " + location);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "Location not chosen", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void checkRadioButton (View v) {
@@ -148,7 +171,12 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         attributes.put("custom:weight", weight);//custom:weight
         attributes.put("custom:physicalActivity", active);//custom:physicalActivity
         attributes.put("custom:gender", gender);//custom:gender (0,1)
-        //custom:location
+        attributes.put("custom:location", location == null ? "" : location.toString());//custom:location
+
+        if(location == null) {
+            Toast.makeText(getApplicationContext(), "Choose your location", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(getApplicationContext(), "Enter name", Toast.LENGTH_SHORT).show();

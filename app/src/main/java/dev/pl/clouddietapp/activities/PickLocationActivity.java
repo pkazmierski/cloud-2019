@@ -1,5 +1,6 @@
 package dev.pl.clouddietapp.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
@@ -57,6 +58,9 @@ public class PickLocationActivity extends BaseActivity implements OnMapReadyCall
 
     private final float DEFAULT_ZOOM = 18;
     private final int PROXIMITY_RADIUS = 5000;
+
+    Bundle coordinates = new Bundle();
+    LatLng centerLatLang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,12 +145,12 @@ public class PickLocationActivity extends BaseActivity implements OnMapReadyCall
 //
 //        materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
 //            @Override
-//            public void OnItemClickListener(int position, View v) {
-//                if (position >= predictionList.size()) {
+//            public void OnItemClickListener(int location, View v) {
+//                if (location >= predictionList.size()) {
 //                    return;
 //                }
-//                AutocompletePrediction selectedPrediction = predictionList.get(position);
-//                String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
+//                AutocompletePrediction selectedPrediction = predictionList.get(location);
+//                String suggestion = materialSearchBar.getLastSuggestions().get(location).toString();
 //                materialSearchBar.setText(suggestion);
 //
 //                new Handler().postDelayed(new Runnable() {
@@ -190,7 +194,7 @@ public class PickLocationActivity extends BaseActivity implements OnMapReadyCall
 //            }
 //
 //            @Override
-//            public void OnItemDeleteListener(int position, View v) {
+//            public void OnItemDeleteListener(int location, View v) {
 //
 //            }
 //        });
@@ -212,24 +216,31 @@ public class PickLocationActivity extends BaseActivity implements OnMapReadyCall
                     }
                 }, 3000);
                 */
-                LatLng centerLatLang = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
-                Bundle coordinates = new Bundle();
-                coordinates.putParcelable("location", centerLatLang);
-                /*
-                Wysłanie na inne activity:
-                Intent i = new Intent(PickLocationActivity.this, Wasza klasa);
-                i.putExtra("bundle", coordinates);
-                startActivity(i);
+                centerLatLang = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+//                coordinates.putParcelable("location", centerLatLang);
+                Button doneBtn = findViewById(R.id.locationPickerDoneBtn);
+                doneBtn.setEnabled(true);
 
-                Odbieranie na innym activity:
+                //NIE TAK SIĘ TO ROBI :VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+//                Wysłanie na inne activity:
+//                Intent i = new Intent(PickLocationActivity.this, Wasza klasa);
+//                i.putExtra("bundle", coordinates);
+//                startActivity(i);
+
+                /*Odbieranie na innym activity:
                 Bundle bundle = getIntent().getParcelableExtra("bundle");
-                LatLng position = bundle.getParcelable("location");
+                LatLng location = bundle.getParcelable("location");
                  */
-
             }
         });
     }
 
+    public void doneBtn(View view) {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("location", centerLatLang);
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

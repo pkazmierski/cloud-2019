@@ -148,12 +148,12 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 //
 //        materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
 //            @Override
-//            public void OnItemClickListener(int position, View v) {
-//                if (position >= predictionList.size()) {
+//            public void OnItemClickListener(int location, View v) {
+//                if (location >= predictionList.size()) {
 //                    return;
 //                }
-//                AutocompletePrediction selectedPrediction = predictionList.get(position);
-//                String suggestion = materialSearchBar.getLastSuggestions().get(position).toString();
+//                AutocompletePrediction selectedPrediction = predictionList.get(location);
+//                String suggestion = materialSearchBar.getLastSuggestions().get(location).toString();
 //                materialSearchBar.setText(suggestion);
 //
 //                new Handler().postDelayed(new Runnable() {
@@ -197,7 +197,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 //            }
 //
 //            @Override
-//            public void OnItemDeleteListener(int position, View v) {
+//            public void OnItemDeleteListener(int location, View v) {
 //
 //            }
 //        });

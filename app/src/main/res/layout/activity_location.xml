@@ -10,4 +10,33 @@
 
     <include layout="@layout/content_location" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="2"/>
+
+        <Button
+            android:id="@+id/locationPickerDoneBtn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="70"
+            android:enabled="false"
+            android:onClick="doneBtn"
+            android:text="@string/done"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="2"/>
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
