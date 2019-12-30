@@ -12,12 +12,13 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="show_password">Show password</string>
+    <string name="save">Save</string>
 
     <string-array name="spinnerActivity">
-        <item>I am Sedentary : No sport or exercise</item>
-        <item>I am lightly active (light exercise or sports : 1 or 3 days per week)</item>
-        <item>I am moderately active (moderate exercise or sports : 3 or 5 days per week)</item>
-        <item>I am very active (hard exercise or sports or physical job : 6 or 7 days per week)</item>
+        <item>I am Sedentary: No sport or exercise</item>
+        <item>I am lightly active (light exercise or sports: 1 or 3 days per week)</item>
+        <item>I am moderately active (moderate exercise or sports: 3 or 5 days per week)</item>
+        <item>I am very active (hard exercise or sports or physical job: 6 or 7 days per week)</item>
         <item>I am super active (very hard exercise or sports and physical job or 2x training)</item>
     </string-array>
 

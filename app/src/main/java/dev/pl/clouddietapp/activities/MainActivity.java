@@ -9,9 +9,11 @@ import android.view.View;
 
 import com.amazonaws.amplify.generated.graphql.ListUserDatasQuery;
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import dev.pl.clouddietapp.R;
 import dev.pl.clouddietapp.data.DataStore;
@@ -40,6 +42,25 @@ public class MainActivity extends BaseActivity {
         DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
         Logic.appSyncDb.getUserData(afterGettingUserData, null);
+    }
+
+    public void printUserData(View view) {
+        try {
+            Callback<Map<String, String>> usrAttributes = new Callback<Map<String, String>>() {
+                @Override
+                public void onResult(Map<String, String> result) {
+                    Log.d(TAG, "printUserData: " + result.toString());
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e(TAG, "onError: " + e.getLocalizedMessage());
+                }
+            };
+            AWSMobileClient.getInstance().getUserAttributes(usrAttributes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
    private Runnable afterGettingUserData = () -> runOnUiThread(() -> {
