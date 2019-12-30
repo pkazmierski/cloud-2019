@@ -1,6 +1,5 @@
 package dev.pl.clouddietapp.models;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class UserData {
@@ -13,7 +12,7 @@ public class UserData {
     private Gender gender;
     private String location;
     private UserPreferences preferences = new UserPreferences();
-    private ArrayList<Food> fridgeContents = new ArrayList<>();
+//    private ArrayList<Food> fridgeContents = new ArrayList<>();
 
     public UserData(UserData oldUserData) {
         this.username = new String(oldUserData.username);
@@ -25,22 +24,22 @@ public class UserData {
         this.gender = oldUserData.gender;
         this.location = new String(oldUserData.location);
         this.preferences = new UserPreferences(oldUserData.preferences);
-        this.fridgeContents = new ArrayList(oldUserData.fridgeContents);
+//        this.fridgeContents = new ArrayList(oldUserData.fridgeContents);
     }
 
     public UserData() {
 
     }
 
-    public Food getFoodById(String foodId) {
-        for(Food food : fridgeContents) {
-            if(food.getId().equals(foodId))
-                return food;
-        }
-        return null;
-    }
+//    public Food getFoodById(String foodId) {
+//        for(Food food : fridgeContents) {
+//            if(food.getId().equals(foodId))
+//                return food;
+//        }
+//        return null;
+//    }
 
-    public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location, UserPreferences preferences, ArrayList<Food> fridgeContents) {
+    public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location, UserPreferences preferences) {
         this.username = username;
         this.fullName = fullName;
         this.age = age;
@@ -50,7 +49,7 @@ public class UserData {
         this.gender = gender;
         this.location = location;
         this.preferences = preferences;
-        this.fridgeContents = fridgeContents;
+//        this.fridgeContents = fridgeContents;
     }
 
     public String getUsername() {
@@ -125,13 +124,13 @@ public class UserData {
         this.preferences = preferences;
     }
 
-    public ArrayList<Food> getFridgeContents() {
-        return fridgeContents;
-    }
-
-    public void setFridgeContents(ArrayList<Food> fridgeContents) {
-        this.fridgeContents = fridgeContents;
-    }
+//    public ArrayList<Food> getFridgeContents() {
+//        return fridgeContents;
+//    }
+//
+//    public void setFridgeContents(ArrayList<Food> fridgeContents) {
+//        this.fridgeContents = fridgeContents;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -158,7 +157,7 @@ public class UserData {
                 ", gender=" + gender +
                 ", location='" + location + '\'' +
                 ", preferences=" + preferences +
-                ", fridgeContents=" + fridgeContents +
+//                ", fridgeContents=" + fridgeContents +
                 '}';
     }
 }

@@ -38,7 +38,7 @@
     <string name="confirm_delete">Are you sure that you want to delete your account?</string>
     <string name="del">Yes, I want to delete my account.</string>
     <string name="dele">Delete</string>
-    <string name="progress">Your data is being deleted...</string>
+    <string name="progress">Your data is being deleted…</string>
 
     <string name="title_activity_base">BaseActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -55,4 +55,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="search">Search</string>
+    <string name="nearby_supermarkets">Nearby supermarkets</string>
+    <string name="other">Other</string>
+    <string name="preferences">Preferences</string>
 </resources>

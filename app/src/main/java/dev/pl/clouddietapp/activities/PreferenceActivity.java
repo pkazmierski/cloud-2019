@@ -1,7 +1,5 @@
 package dev.pl.clouddietapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import dev.pl.clouddietapp.R;
-import dev.pl.clouddietapp.data.AppSyncDb;
 import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
 import dev.pl.clouddietapp.models.UserData;
@@ -33,10 +30,10 @@ public class PreferenceActivity extends BaseActivity {
         drawer.addView(contentView, 0);
 
         maxDistanceSupermarketInputTxt = findViewById(R.id.maxDistanceSupermarketInputTxt);
-        onlyVegetarianInputTxt = findViewById(R.id.onlyVegetarianInputTxt);
+//        onlyVegetarianInputTxt = findViewById(R.id.onlyVegetarianInputTxt);
 
-        maxDistanceSupermarketInputTxt.setText(DataStore.getUserData().getPreferences().getMaxSupermarketDistance());
-        onlyVegetarianInputTxt.setChecked(DataStore.getUserData().getPreferences().isVegetarian());
+        maxDistanceSupermarketInputTxt.setText(String.valueOf(DataStore.getUserData().getPreferences().getMaxSupermarketDistance()));
+//        onlyVegetarianInputTxt.setChecked(DataStore.getUserData().getPreferences().isVegetarian());
     }
 
     public void saveSettingsToDb(View view) {
@@ -48,8 +45,8 @@ public class PreferenceActivity extends BaseActivity {
 
         UserData newUserData = DataStore.getUserData();
         UserPreferences newUserPreferences = new UserPreferences(
-                Integer.parseInt(maxDistanceSupermarketInputTxt.getText().toString()),
-                onlyVegetarianInputTxt.isChecked());
+                Integer.parseInt(maxDistanceSupermarketInputTxt.getText().toString()));
+//                onlyVegetarianInputTxt.isChecked());
         newUserData.setPreferences(newUserPreferences);
 
         Logic.appSyncDb.setUserData(afterPreferencesSetSuccess, afterPreferencesSetFailed, newUserData);

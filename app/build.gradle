@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-appsync:2.8.3'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.7.+'
 
     // Mobile Client for initializing the SDK
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.8.+@aar') { transitive = true }

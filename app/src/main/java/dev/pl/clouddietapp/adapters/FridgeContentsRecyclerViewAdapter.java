@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import dev.pl.clouddietapp.R;
-import dev.pl.clouddietapp.data.DataStore;
-import dev.pl.clouddietapp.models.Food;
 import dev.pl.clouddietapp.models.FoodDefinition;
 
 public class FridgeContentsRecyclerViewAdapter extends RecyclerView.Adapter<FridgeContentsRecyclerViewAdapter.ViewHolder> {
@@ -50,13 +48,13 @@ public class FridgeContentsRecyclerViewAdapter extends RecyclerView.Adapter<Frid
         holder.foodAmountTxt.setTag(position);
         FoodDefinition foodDefinition = foodDefinitions.get(position);
         //todo food może być null, jezeli user został dodany do bazy danych, ale user go jeszcze nie ma
-        if (DataStore.getUserData().getFoodById(foodDefinition.getId()) == null) {
-            DataStore.getUserData().getFridgeContents().add(new Food(foodDefinition.getId(), 0.0));
-        }
-        final Food food = DataStore.getUserData().getFoodById(foodDefinition.getId());
+//        if (DataStore.getUserData().getFoodById(foodDefinition.getId()) == null) {
+//            DataStore.getUserData().getFridgeContents().add(new Food(foodDefinition.getId(), 0.0));
+//        }
+//        final Food food = DataStore.getUserData().getFoodById(foodDefinition.getId());
 
         holder.foodNameTxt.setText(foodDefinition.getName());
-        holder.foodAmountTxt.setText(String.valueOf(food.getAmount()));
+//        holder.foodAmountTxt.setText(String.valueOf(food.getAmount()));
         holder.foodUnitTxt.setText(foodDefinition.getUnit());
 
 //        holder.foodAmountTxt.addTextChangedListener(new TextWatcher() {
@@ -121,14 +119,14 @@ public class FridgeContentsRecyclerViewAdapter extends RecyclerView.Adapter<Frid
                     if (s.toString().equals("")) {
                         if (foodAmountTxt.getTag() != null) {
                             String id = foodDefinitions.get((int) foodAmountTxt.getTag()).getId();
-                            DataStore.getUserData().getFoodById(id).setAmount(0.0);
+//                            DataStore.getUserData().getFoodById(id).setAmount(0.0);
                         }
                     } else {
                         if (foodAmountTxt.getTag() != null) {
                             String id = foodDefinitions.get((int) foodAmountTxt.getTag()).getId();
-                            Food food = DataStore.getUserData().getFoodById(id);
-                            Log.d(TAG, "afterTextChanged: food: " + counter + "\n" + food.toString() + "\nfoodDef: " + foodDefinitions.get((int) foodAmountTxt.getTag()) + "\nnewText: " + s.toString() + "\narray: " + foodDefinitions.toString());
-                            food.setAmount(Double.valueOf(s.toString()));
+//                            Food food = DataStore.getUserData().getFoodById(id);
+//                            Log.d(TAG, "afterTextChanged: food: " + counter + "\n" + food.toString() + "\nfoodDef: " + foodDefinitions.get((int) foodAmountTxt.getTag()) + "\nnewText: " + s.toString() + "\narray: " + foodDefinitions.toString());
+//                            food.setAmount(Double.valueOf(s.toString()));
                         }
                     }
                 }

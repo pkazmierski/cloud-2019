@@ -2,19 +2,24 @@ package dev.pl.clouddietapp.models;
 
 public class UserPreferences {
     private int maxSupermarketDistance;
-    private boolean isVegetarian;
+//    private boolean isVegetarian;
 
     public UserPreferences(UserPreferences oldUserPreferences) {
         this.maxSupermarketDistance = oldUserPreferences.maxSupermarketDistance;
-        this.isVegetarian = oldUserPreferences.isVegetarian;
+//        this.isVegetarian = oldUserPreferences.isVegetarian;
     }
 
-    public UserPreferences(int maxSupermarketDistance, boolean isVegetarian) {
+//    public UserPreferences(int maxSupermarketDistance, boolean isVegetarian) {
+//        this.maxSupermarketDistance = maxSupermarketDistance;
+//        this.isVegetarian = isVegetarian;
+//    }
+
+    public UserPreferences(int maxSupermarketDistance) {
         this.maxSupermarketDistance = maxSupermarketDistance;
-        this.isVegetarian = isVegetarian;
     }
 
-    public UserPreferences() {}
+    public UserPreferences() {
+    }
 
     public int getMaxSupermarketDistance() {
         return maxSupermarketDistance;
@@ -24,19 +29,19 @@ public class UserPreferences {
         this.maxSupermarketDistance = maxSupermarketDistance;
     }
 
-    public boolean isVegetarian() {
-        return isVegetarian;
-    }
+//    public boolean isVegetarian() {
+//        return isVegetarian;
+//    }
 
-    public void setVegetarian(boolean vegetarian) {
-        isVegetarian = vegetarian;
-    }
+//    public void setVegetarian(boolean vegetarian) {
+//        isVegetarian = vegetarian;
+//    }
 
     @Override
     public String toString() {
         return "UserPreferences{" +
                 "maxSupermarketDistance=" + maxSupermarketDistance +
-                ", isVegetarian=" + isVegetarian +
+//                ", isVegetarian=" + isVegetarian +
                 '}';
     }
 }

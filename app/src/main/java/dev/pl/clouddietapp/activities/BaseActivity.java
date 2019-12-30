@@ -52,12 +52,10 @@ public class BaseActivity extends AppCompatActivity
             startActivity(new Intent(this, AuthenticationActivity.class));
         } else if (id == R.id.nav_delete) {
             startActivity(new Intent(this, DeleteAccountActivity.class));
-        } else if (id == R.id.nav_fridge_contents) {
-            startAnimatedActivity(new Intent(getApplicationContext(), FridgeContentsActivity.class));
         } else if (id == R.id.nav_map) {
             startAnimatedActivity(new Intent(getApplicationContext(), PermissionActivity.class));
-        } else if (id == R.id.nav_send) {
-            //startAnimatedActivity(new Intent(getApplicationContext(), PermissionActivity.class));
+        } else if (id == R.id.nav_preferences) {
+            startAnimatedActivity(new Intent(getApplicationContext(), PreferenceActivity.class));
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

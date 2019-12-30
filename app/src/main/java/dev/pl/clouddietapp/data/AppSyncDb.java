@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
-import com.amazonaws.amplify.generated.graphql.ListFoodDefinitionsQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipesQuery;
 import com.amazonaws.amplify.generated.graphql.UpdateUserDataMutation;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
@@ -12,35 +11,33 @@ import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import dev.pl.clouddietapp.models.Food;
-import dev.pl.clouddietapp.models.FoodDefinition;
 import dev.pl.clouddietapp.models.Recipe;
+import dev.pl.clouddietapp.models.RecipeType;
 import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
 import type.CreateUserDataInput;
+import type.ModelIntFilterInput;
+import type.ModelRecipeFilterInput;
+import type.ModelStringFilterInput;
 import type.UpdateUserDataInput;
 
 import static dev.pl.clouddietapp.logic.Logic.appSyncClient;
 
 public class AppSyncDb {
-    //TODO sprawdzić, czy nie potrzeba toStringów np. w queryData.getUserData().preferences() itp.
     private static final String TAG = "AppSyncDb";
     private String recipesNextToken;
-    private String foodDefinitionsNextToken;
+//    private String foodDefinitionsNextToken;
 
     public AppSyncDb() {
     }
 
-    private UserPreferences parseUserPreferences(GetUserDataQuery.Data queryData) {
+    /*private UserPreferences parseUserPreferences(GetUserDataQuery.Data queryData) {
         try {
             //Preferences
             JSONObject jsonPreferences = new JSONObject(queryData.getUserData().preferences());
@@ -53,9 +50,9 @@ public class AppSyncDb {
             e.printStackTrace();
             return new UserPreferences();
         }
-    }
+    }*/
 
-    private ArrayList<Food> parseFridgeContents(GetUserDataQuery.Data queryData) {
+    /*private ArrayList<Food> parseFridgeContents(GetUserDataQuery.Data queryData) {
         ArrayList<Food> foods = new ArrayList<>();
         if (queryData.getUserData().fridgeContents() == null)
             return foods;
@@ -79,9 +76,9 @@ public class AppSyncDb {
             e.printStackTrace();
             return new ArrayList<>();
         }
-    }
+    }*/
 
-    private ArrayList<FoodDefinition> parseFoodDefinitons(ListFoodDefinitionsQuery.Data queryData) {
+    /*private ArrayList<FoodDefinition> parseFoodDefinitons(ListFoodDefinitionsQuery.Data queryData) {
         ArrayList<FoodDefinition> foodDefinitions = new ArrayList<>();
         if (queryData.listFoodDefinitions() == null || queryData.listFoodDefinitions().items() == null)
             return foodDefinitions;
@@ -100,9 +97,9 @@ public class AppSyncDb {
         }
         Log.d(TAG, "parseFoodDefinitons: " + foodDefinitions.toString());
         return foodDefinitions;
-    }
+    }*/
 
-    private ArrayList<Recipe> parseRecipes(ListRecipesQuery.Data queryData) {
+    /*private ArrayList<Recipe> parseRecipes(ListRecipesQuery.Data queryData) {
         ArrayList<Recipe> recipes = new ArrayList<>();
         if (queryData.listRecipes() == null || queryData.listRecipes().items() == null)
             return recipes;
@@ -137,9 +134,9 @@ public class AppSyncDb {
             e.printStackTrace();
             return new ArrayList<>();
         }
-    }
+    }*/
 
-    private String fridgeContentsToJson(ArrayList<Food> fridgeContents) {
+    /*private String fridgeContentsToJson(ArrayList<Food> fridgeContents) {
         try {
             ArrayList<Food> foods = DataStore.getUserData().getFridgeContents();
             JSONObject jsonObjectFoodsArray = new JSONObject();
@@ -159,9 +156,9 @@ public class AppSyncDb {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
-    private String preferencesToJson(UserPreferences preferences) {
+    /*private String preferencesToJson(UserPreferences preferences) {
         try {
             UserPreferences userPreferences = DataStore.getUserData().getPreferences();
             JSONObject jsonObjectUserPreferences = new JSONObject();
@@ -172,9 +169,9 @@ public class AppSyncDb {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
-    public void getFoodDefinitions(final Runnable onSuccess, final Runnable onFailure) {
+    /*public void getFoodDefinitions(final Runnable onSuccess, final Runnable onFailure) {
         GraphQLCall.Callback<ListFoodDefinitionsQuery.Data> listFoodDefinitionsQueryCallback = new GraphQLCall.Callback<ListFoodDefinitionsQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<ListFoodDefinitionsQuery.Data> response) {
@@ -201,15 +198,19 @@ public class AppSyncDb {
                 .build())
                 .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
                 .enqueue(listFoodDefinitionsQueryCallback);
-    }
+    }*/
 
     public void getUserData(final Runnable onSuccess, final Runnable onFailure) {
         GraphQLCall.Callback<GetUserDataQuery.Data> getUserDataCallback = new GraphQLCall.Callback<GetUserDataQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<GetUserDataQuery.Data> response) {
 
-                DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
-                DataStore.getUserData().setPreferences(parseUserPreferences(response.data()));
+//                DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
+                if(response.data().getUserData().maxDistanceToSupermarket() == null) {
+                    DataStore.getUserData().setPreferences(new UserPreferences(10));
+                } else {
+                    DataStore.getUserData().setPreferences(new UserPreferences(response.data().getUserData().maxDistanceToSupermarket()));
+                }
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -234,8 +235,6 @@ public class AppSyncDb {
         GraphQLCall.Callback<CreateUserDataMutation.Data> createUserDataMutationCallback = new GraphQLCall.Callback<CreateUserDataMutation.Data>() {
             @Override
             public void onResponse(@Nonnull Response<CreateUserDataMutation.Data> response) {
-
-                //TODO implement
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -280,14 +279,23 @@ public class AppSyncDb {
 
         UpdateUserDataInput createUserDataInput = UpdateUserDataInput.builder()
                 .id(DataStore.getUserData().getUsername())
-                .fridgeContents(fridgeContentsToJson(newUserData.getFridgeContents()))
-                .preferences(preferencesToJson(newUserData.getPreferences()))
+//                .fridgeContents(fridgeContentsToJson(newUserData.getFridgeContents()))
+                .maxDistanceToSupermarket(DataStore.getUserData().getPreferences().getMaxSupermarketDistance())
                 .build();
 
         appSyncClient.mutate(UpdateUserDataMutation.builder()
                 .input(createUserDataInput)
                 .build())
                 .enqueue(createUserDataMutationCallback);
+    }
+
+    private ArrayList<Recipe> parseRecipes(List<ListRecipesQuery.Item> dbRecipes) {
+        ArrayList<Recipe> parsedRecipes = new ArrayList<>();
+        for (ListRecipesQuery.Item dbRecipe : dbRecipes) {
+            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.content(), dbRecipe.photo(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
+            parsedRecipes.add(recipe);
+        }
+        return parsedRecipes;
     }
 
     public void getAllRecipes(final Runnable onSuccess, final Runnable onFailure) {
@@ -300,7 +308,7 @@ public class AppSyncDb {
                 if (response.data().listRecipes().nextToken() != null)
                     recipesNextToken = response.data().listRecipes().nextToken();
 
-                DataStore.setRecipes(parseRecipes(response.data()));
+                DataStore.setRecipes(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -320,11 +328,15 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
-    public void getAllRecipesNext(final Runnable onSuccess, final Runnable onFailure) {
+    public void getFilteredRecipes(final Runnable onSuccess, final Runnable onFailure, final RecipeType type, final int calories, final List<Recipe> filteredRecipeStorage) {
         GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
-                DataStore.setRecipes(parseRecipes(response.data()));
+                assert response.data() != null;
+                assert response.data().listRecipes() != null;
+
+                filteredRecipeStorage.clear();
+                filteredRecipeStorage.addAll(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -338,10 +350,40 @@ public class AppSyncDb {
             }
         };
 
+        ModelRecipeFilterInput modelRecipeFilterInput = ModelRecipeFilterInput.builder()
+                .calories(ModelIntFilterInput.builder().ge(calories-50).lt(calories+50).build())
+                .type(ModelStringFilterInput.builder().eq(type.toString()).build())
+                .build();
+
         appSyncClient.query(ListRecipesQuery.builder()
-                .nextToken(recipesNextToken)
+                .filter(modelRecipeFilterInput)
                 .build())
                 .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
                 .enqueue(listRecipesQueryCallback);
     }
+
+//    public void getAllRecipesNext(final Runnable onSuccess, final Runnable onFailure) {
+//        GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
+//            @Override
+//            public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
+//                DataStore.setRecipes(parseRecipes(response.data()));
+//
+//                if (onSuccess != null)
+//                    onSuccess.run();
+//            }
+//
+//            @Override
+//            public void onFailure(@Nonnull ApolloException e) {
+//                Log.e("ERROR", e.toString());
+//                if (onFailure != null)
+//                    onFailure.run();
+//            }
+//        };
+//
+//        appSyncClient.query(ListRecipesQuery.builder()
+//                .nextToken(recipesNextToken)
+//                .build())
+//                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+//                .enqueue(listRecipesQueryCallback);
+//    }
 }

@@ -1,19 +1,17 @@
 package dev.pl.clouddietapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -58,7 +56,7 @@ public class FridgeContentsActivity extends BaseActivity {
         });
 
         initRecyclerView();
-        Logic.appSyncDb.getFoodDefinitions(getAfterGetFoodDefinitionSuccess, afterGetFoodDefinitionFailure);
+//        Logic.appSyncDb.getFoodDefinitions(getAfterGetFoodDefinitionSuccess, afterGetFoodDefinitionFailure);
         Logic.appSyncDb.getUserData(getAfterGetUserDataSuccess, afterGetUserDataFailure);
     }
 

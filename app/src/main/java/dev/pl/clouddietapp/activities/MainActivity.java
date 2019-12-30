@@ -1,34 +1,21 @@
 package dev.pl.clouddietapp.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 
-import com.amazonaws.amplify.generated.graphql.CreateFoodDefinitionMutation;
 import com.amazonaws.amplify.generated.graphql.ListUserDatasQuery;
 import com.amazonaws.mobile.client.AWSMobileClient;
-import com.apollographql.apollo.GraphQLCall;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import dev.pl.clouddietapp.R;
-import dev.pl.clouddietapp.data.AppSyncDb;
 import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
-import type.CreateFoodDefinitionInput;
-
-import static dev.pl.clouddietapp.logic.Logic.appSyncClient;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -50,13 +37,13 @@ public class MainActivity extends BaseActivity {
 //        addNewFoodDefinitions(milk2Percent);
 //        addNewFoodDefinitions(cornFlakes);
 
-//        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
+        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
-//        Logic.appSyncDb.getUserData(afterGettingUserData, null);
+        Logic.appSyncDb.getUserData(afterGettingUserData, null);
     }
 
    private Runnable afterGettingUserData = () -> runOnUiThread(() -> {
-        Log.d(TAG, "got user fridge contents: " + DataStore.getUserData().getFridgeContents().toString());
+//        Log.d(TAG, "got user fridge contents: " + DataStore.getUserData().getFridgeContents().toString());
         Log.d(TAG, "got user preferences: " + DataStore.getUserData().getPreferences().toString());
 //        UserData newUserData = DataStore.getUserData();
 //

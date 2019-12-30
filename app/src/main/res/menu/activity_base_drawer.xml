@@ -3,47 +3,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
 
-        <item
-            android:id="@+id/nav_fridge_contents"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Fridge contents" />
+<!--        <item-->
+<!--            android:id="@+id/nav_fridge_contents"-->
+<!--            android:icon="@drawable/ic_menu_gallery"-->
+<!--            android:title="Fridge contents" />-->
 
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_menu_map"
-            android:title="Nearby supermarkets" />
+            android:title="@string/nearby_supermarkets" />
 <!--Testing location picker for login-->
 <!--        <item-->
 <!--            android:id="@+id/nav_test"-->
 <!--            android:icon="@drawable/ic_menu_map"-->
 <!--            android:title="Test" />-->
-    </group>
 
-    <item android:title="Other">
+
+    <item android:title="@string/other">
         <menu>
+
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_preferences"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="@string/action_settings" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_share"
-                android:title="About" />
+                android:title="@string/preferences" />
+<!--            <item-->
+<!--                android:id="@+id/nav_send"-->
+<!--                android:icon="@drawable/ic_menu_share"-->
+<!--                android:title="About" />-->
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_close"
+                android:icon="@drawable/ic_vpn_key_gray_24dp"
                 android:title="@string/logout" />
-            <item
-                android:id="@+id/nav_delete"
-                android:icon="@drawable/ic_menu_delete"
-                android:title="@string/delete" />
+
+
+
         </menu>
     </item>
+
+    <group android:id="@+id/nav_grp_del_acc" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_delete"
+            android:icon="@drawable/ic_menu_delete"
+            android:title="@string/delete" />
+    </group>
 
 </menu>
