@@ -59,4 +59,7 @@
     <string name="nearby_supermarkets">Nearby supermarkets</string>
     <string name="other">Other</string>
     <string name="preferences">Preferences</string>
+    <string name="your_bmr_is">Your BMR is</string>
+    <string name="user_data">User data</string>
+    <string name="max_distance_to_the_supermarket">Max distance to the supermarket</string>
 </resources>

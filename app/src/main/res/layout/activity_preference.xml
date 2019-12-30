@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="8"
-            android:text="Max distance to the supermarket"
+            android:text="@string/max_distance_to_the_supermarket"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000" />
 
@@ -38,6 +38,12 @@
             android:maxEms="2"
             android:textAlignment="textEnd"
             android:importantForAutofill="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="km" />
     </LinearLayout>
 
 <!--    <LinearLayout-->

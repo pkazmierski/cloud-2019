@@ -56,6 +56,8 @@ public class BaseActivity extends AppCompatActivity
             startAnimatedActivity(new Intent(getApplicationContext(), PermissionActivity.class));
         } else if (id == R.id.nav_preferences) {
             startAnimatedActivity(new Intent(getApplicationContext(), PreferenceActivity.class));
+        } else if(id == R.id.nav_user_data) {
+            startAnimatedActivity(new Intent(getApplicationContext(), EditDataActivity.class));
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -7,7 +7,7 @@ public class UserData {
     private String fullName;
     private int age;
     private int heightInCm;
-    private int weight;
+    private double weight;
     private int physicalActivity;
     private Gender gender;
     private String location;
@@ -39,7 +39,7 @@ public class UserData {
 //        return null;
 //    }
 
-    public UserData(String username, String fullName, int age, int heightInCm, int weight, int physicalActivity, Gender gender, String location, UserPreferences preferences) {
+    public UserData(String username, String fullName, int age, int heightInCm, double weight, int physicalActivity, Gender gender, String location, UserPreferences preferences) {
         this.username = username;
         this.fullName = fullName;
         this.age = age;
@@ -84,11 +84,11 @@ public class UserData {
         this.heightInCm = heightInCm;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

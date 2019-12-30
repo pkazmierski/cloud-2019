@@ -4,25 +4,25 @@
     tools:showIn="navigation_view">
 
 
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/menu_home" />
 
-<!--        <item-->
-<!--            android:id="@+id/nav_fridge_contents"-->
-<!--            android:icon="@drawable/ic_menu_gallery"-->
-<!--            android:title="Fridge contents" />-->
+    <!--        <item-->
+    <!--            android:id="@+id/nav_fridge_contents"-->
+    <!--            android:icon="@drawable/ic_menu_gallery"-->
+    <!--            android:title="Fridge contents" />-->
 
-        <item
-            android:id="@+id/nav_map"
-            android:icon="@drawable/ic_menu_map"
-            android:title="@string/nearby_supermarkets" />
-<!--Testing location picker for login-->
-<!--        <item-->
-<!--            android:id="@+id/nav_test"-->
-<!--            android:icon="@drawable/ic_menu_map"-->
-<!--            android:title="Test" />-->
+    <item
+        android:id="@+id/nav_map"
+        android:icon="@drawable/ic_menu_map"
+        android:title="@string/nearby_supermarkets" />
+    <!--Testing location picker for login-->
+    <!--        <item-->
+    <!--            android:id="@+id/nav_test"-->
+    <!--            android:icon="@drawable/ic_menu_map"-->
+    <!--            android:title="Test" />-->
 
 
     <item android:title="@string/other">
@@ -32,21 +32,27 @@
                 android:id="@+id/nav_preferences"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/preferences" />
-<!--            <item-->
-<!--                android:id="@+id/nav_send"-->
-<!--                android:icon="@drawable/ic_menu_share"-->
-<!--                android:title="About" />-->
+
+            <item
+                android:id="@+id/nav_user_data"
+                android:icon="@drawable/ic_person_black_24dp"
+                android:title="@string/user_data" />
+            <!--            <item-->
+            <!--                android:id="@+id/nav_send"-->
+            <!--                android:icon="@drawable/ic_menu_share"-->
+            <!--                android:title="About" />-->
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_vpn_key_gray_24dp"
                 android:title="@string/logout" />
 
 
-
         </menu>
     </item>
 
-    <group android:id="@+id/nav_grp_del_acc" android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_grp_del_acc"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_delete"
             android:icon="@drawable/ic_menu_delete"
