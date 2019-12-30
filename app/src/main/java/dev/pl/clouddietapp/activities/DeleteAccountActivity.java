@@ -1,15 +1,16 @@
 package dev.pl.clouddietapp.activities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
@@ -18,7 +19,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHa
 
 import dev.pl.clouddietapp.R;
 
-public class DeleteAccountActivity extends AppCompatActivity {
+public class DeleteAccountActivity extends BaseActivity {
 
     Button deleteButton;
     CheckBox checkDelete;
@@ -27,7 +28,10 @@ public class DeleteAccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delete_account);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        @SuppressLint("InflateParams")
+        View contentView = inflater.inflate(R.layout.activity_delete_account, null, false);
+        drawer.addView(contentView, 0);
 
         deleteButton = findViewById(R.id.deleteButton);
         deleteButton.setVisibility(View.GONE);
