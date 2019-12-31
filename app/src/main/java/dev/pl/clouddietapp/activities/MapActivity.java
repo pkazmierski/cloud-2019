@@ -42,7 +42,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import java.util.List;
 
 import dev.pl.clouddietapp.R;
+import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.data.GetNearbyPlacesData;
+import dev.pl.clouddietapp.logic.Logic;
 
 public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
@@ -60,7 +62,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
     private Button btnFind;
 
     private final float DEFAULT_ZOOM = 18;
-    private final int PROXIMITY_RADIUS = 5000;
+    private int PROXIMITY_RADIUS = 5000; //default value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,144 +83,16 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
         Places.initialize(MapActivity.this, "AIzaSyBQfaiHQGQvpGe0v2Bof6_PlpN621-1Nrk");
         placesClient = Places.createClient(this);
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-//        materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
-//            @Override
-//            public void onSearchStateChanged(boolean enabled) {
-//
-//            }
-//
-//            @Override
-//            public void onSearchConfirmed(CharSequence text) {
-//                startSearch(text.toString(), true, null, true);
-//            }
-//
-//            @Override
-//            public void onButtonClicked(int buttonCode) {
-//                if (buttonCode == MaterialSearchBar.BUTTON_NAVIGATION) {
-//                    //opening or closing a navigation drawer
-//                } else if (buttonCode == MaterialSearchBar.BUTTON_BACK) {
-//                    materialSearchBar.disableSearch();
-//                }
-//            }
-//        });
-//
-//        materialSearchBar.addTextChangeListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-//                        .setCountry("pl")
-//                        .setTypeFilter(TypeFilter.ADDRESS)
-//                        .setSessionToken(token)
-//                        .setQuery(s.toString()).build();
-//                placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
-//                        if (task.isSuccessful()) {
-//                            FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
-//                            if (predictionsResponse != null) {
-//                                predictionList = predictionsResponse.getAutocompletePredictions();
-//                                List<String> suggestionsList = new ArrayList<>();
-//                                for (int i = 0; i < predictionList.size(); i++) {
-//                                    AutocompletePrediction prediction = predictionList.get(i);
-//                                    suggestionsList.add(prediction.getFullText(null).toString());
-//                                }
-//                                materialSearchBar.updateLastSuggestions(suggestionsList);
-//                                if (!materialSearchBar.isSuggestionsVisible()) {
-//                                    materialSearchBar.showSuggestionsList();
-//                                }
-//                            }
-//                        } else {
-//                            Log.i("mytag", "prediction fetching task unseccessful");
-//                        }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
-//
-//        materialSearchBar.setSuggestionsClickListener(new SuggestionsAdapter.OnItemViewClickListener() {
-//            @Override
-//            public void OnItemClickListener(int location, View v) {
-//                if (location >= predictionList.size()) {
-//                    return;
-//                }
-//                AutocompletePrediction selectedPrediction = predictionList.get(location);
-//                String suggestion = materialSearchBar.getLastSuggestions().get(location).toString();
-//                materialSearchBar.setText(suggestion);
-//
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        materialSearchBar.clearSuggestions();
-//                    }
-//                }, 1000);
-//
-//                materialSearchBar.clearSuggestions();
-//                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-//                if (imm != null) {
-//                    imm.hideSoftInputFromWindow(materialSearchBar.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-//                    String placeId = selectedPrediction.getPlaceId();
-//                    List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
-//
-//                    FetchPlaceRequest fetchPlaceRequest = FetchPlaceRequest.builder(placeId, placeFields).build();
-//                    placesClient.fetchPlace(fetchPlaceRequest).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-//                        @Override
-//                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-//                            Place place = fetchPlaceResponse.getPlace();
-//                            Log.i("mytag", "Place found: " + place.getName());
-//                            LatLng latLngOfPlace = place.getLatLng();
-//                            if (latLngOfPlace != null) {
-//                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOfPlace, DEFAULT_ZOOM));
-//                            }
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            if (e instanceof ApiException) {
-//                                ApiException apiException = (ApiException) e;
-//                                apiException.printStackTrace();
-//                                int statusCode = apiException.getStatusCode();
-//                                Log.i("mytag", "place not found: " + e.getMessage());
-//                                Log.i("mytag", "status code: " + statusCode);
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void OnItemDeleteListener(int location, View v) {
-//
-//            }
-//        });
+        Runnable gotUserData = () -> { PROXIMITY_RADIUS = DataStore.getUserData().getPreferences().getMaxSupermarketDistance() * 1000;};
+        Logic.appSyncDb.getUserData(gotUserData, null);
 
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                LatLng currentMarkerLocation = mMap.getCameraPosition().target;
-                rippleBg.startRippleAnimation();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rippleBg.stopRippleAnimation();
-                        rippleBg.clearAnimation();
-                        //start activity
-                        startActivity(new Intent(MapActivity.this, MapActivity.class));
-                        //finish();
-                    }
-                }, 3000);
-                */
+
+
+
+
                 if (btnFind.getText().equals(FIND_SUPERMARKETS)) {
                     Log.d("onClick", "Button is Clicked");
                     mMap.clear();
@@ -350,6 +224,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
+        //PROXIMITY_RADIUS
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);

@@ -205,7 +205,7 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     }
 
     public void editDataLocationBtn(View view) {
-        Intent i = new Intent(this, PickLocationActivity.class);
+        Intent i = new Intent(this, LocationPermissionActivity.class);
         startActivityForResult(i, 1);
     }
 
