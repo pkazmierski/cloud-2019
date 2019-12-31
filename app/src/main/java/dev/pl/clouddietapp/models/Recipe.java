@@ -7,7 +7,7 @@ public class Recipe {
     private String id;
 //    private ArrayList<Food> foodList;
     private String content;
-    private List<String> photo;
+    private List<String> photos;
     private RecipeType type;
     private int calories;
 
@@ -18,20 +18,28 @@ public class Recipe {
 //    }
 
 
-    public Recipe(String id, String content, List<String> photo, RecipeType type, int calories) {
+    public Recipe(String id, String content, List<String> photos, RecipeType type, int calories) {
         this.id = id;
         this.content = content;
-        this.photo = photo;
+        this.photos = photos;
         this.type = type;
         this.calories = calories;
     }
 
-    public List<String> getPhoto() {
-        return photo;
+    public Recipe(String id, String content, RecipeType type, int calories) {
+        this.id = id;
+        this.content = content;
+        this.photos = null;
+        this.type = type;
+        this.calories = calories;
     }
 
-    public void setPhoto(List<String> photo) {
-        this.photo = photo;
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
     }
 
     public RecipeType getType() {
@@ -92,7 +100,7 @@ public class Recipe {
         return "Recipe{" +
                 "id='" + id + '\'' +
                 ", content='" + content + '\'' +
-                ", photo=" + photo +
+                ", photos=" + photos +
                 ", type=" + type +
                 ", calories=" + calories +
                 '}';

@@ -1,5 +1,7 @@
 package dev.pl.clouddietapp.models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class UserData {
@@ -12,6 +14,16 @@ public class UserData {
     private Gender gender;
     private String location;
     private UserPreferences preferences = new UserPreferences();
+
+    public List<Recipe> getRecommendedRecipes() {
+        return recommendedRecipes;
+    }
+
+    public void setRecommendedRecipes(List<Recipe> recommendedRecipes) {
+        this.recommendedRecipes = recommendedRecipes;
+    }
+
+    private List<Recipe> recommendedRecipes;
 //    private ArrayList<Food> fridgeContents = new ArrayList<>();
 
     public UserData(UserData oldUserData) {
@@ -24,6 +36,7 @@ public class UserData {
         this.gender = oldUserData.gender;
         this.location = new String(oldUserData.location);
         this.preferences = new UserPreferences(oldUserData.preferences);
+        this.recommendedRecipes = new ArrayList<>(oldUserData.recommendedRecipes);
 //        this.fridgeContents = new ArrayList(oldUserData.fridgeContents);
     }
 
@@ -39,7 +52,7 @@ public class UserData {
 //        return null;
 //    }
 
-    public UserData(String username, String fullName, int age, int heightInCm, double weight, int physicalActivity, Gender gender, String location, UserPreferences preferences) {
+    public UserData(String username, String fullName, int age, int heightInCm, double weight, int physicalActivity, Gender gender, String location, UserPreferences preferences, List<Recipe> recommendedRecipes) {
         this.username = username;
         this.fullName = fullName;
         this.age = age;
@@ -49,6 +62,7 @@ public class UserData {
         this.gender = gender;
         this.location = location;
         this.preferences = preferences;
+        this.recommendedRecipes = recommendedRecipes;
 //        this.fridgeContents = fridgeContents;
     }
 

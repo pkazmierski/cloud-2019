@@ -88,7 +88,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 Log.i(TAG, userStateDetails.getUserState().toString());
                 if (userStateDetails.getUserState() == UserState.SIGNED_IN) {
                     finish();
-                    Intent i = new Intent(ResetPasswordActivity.this, MainActivity.class);
+                    Intent i = new Intent(ResetPasswordActivity.this, DishesActivity.class);
                     startActivity(i);
                 } else {
                     reset();

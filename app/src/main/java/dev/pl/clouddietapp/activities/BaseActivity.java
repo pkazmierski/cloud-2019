@@ -44,8 +44,8 @@ public class BaseActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.nav_home) {
-            startAnimatedActivity(new Intent(getApplicationContext(), MainActivity.class));
+        if (id == R.id.nav_dishes) {
+            startAnimatedActivity(new Intent(getApplicationContext(), DishesActivity.class));
         } else if (id == R.id.nav_logout) {
             AWSMobileClient.getInstance().signOut();
             finishAffinity();

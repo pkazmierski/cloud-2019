@@ -220,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 switch (userStateDetails.getUserState()){
                     case SIGNED_IN:
                         finish();
-                        Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                        Intent i = new Intent(RegisterActivity.this, DishesActivity.class);
                         startActivity(i);
                         break;
                     case SIGNED_OUT:
@@ -323,7 +323,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                         } else {
                             Toast.makeText(getApplicationContext(),"Sign-up done.", Toast.LENGTH_SHORT).show();
                             finish();
-                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent i = new Intent(RegisterActivity.this, DishesActivity.class);
                             startActivity(i);
                         }
                     }

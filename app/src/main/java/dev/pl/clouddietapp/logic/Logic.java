@@ -17,24 +17,28 @@ import dev.pl.clouddietapp.models.UserData;
 public class Logic {
     public static AWSAppSyncClient appSyncClient;
     public static AppSyncDb appSyncDb = new AppSyncDb();
+    private static boolean init = false;
 
     public static void initAppSync(Context ctx) {
-        appSyncClient = AWSAppSyncClient.builder()
-                .context(ctx)
-                .awsConfiguration(new AWSConfiguration(ctx))
-                .region(Regions.EU_CENTRAL_1)
-                .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
-                    @Override
-                    public String getLatestAuthToken() {
-                        try {
-                            return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
-                        } catch (Exception e){
-                            Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
-                            return e.getLocalizedMessage();
+        if (!init) {
+            appSyncClient = AWSAppSyncClient.builder()
+                    .context(ctx)
+                    .awsConfiguration(new AWSConfiguration(ctx))
+                    .region(Regions.EU_CENTRAL_1)
+                    .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
+                        @Override
+                        public String getLatestAuthToken() {
+                            try {
+                                return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
+                            } catch (Exception e) {
+                                Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
+                                return e.getLocalizedMessage();
+                            }
                         }
-                    }
-                })
-                .build();
+                    })
+                    .build();
+            init = true;
+        }
     }
 
     public static double calculateBMR() {

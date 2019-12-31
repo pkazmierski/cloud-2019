@@ -22,6 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
+
+        <activity android:name=".activities.DishesActivity"
+            android:label="Dishes"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".activities.EditDataActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -35,6 +41,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PreferenceActivity"
+            android:label="Preferences"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MainActivity"
@@ -42,25 +49,27 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MapActivity"
-            android:label="MapActivity"
+            android:label="Supermarkets"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PickLocationActivity"
-            android:label="PickLocationActivity"
+            android:label="Pick home location"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.DeleteAccountActivity"
+            android:label="Delete account"
             android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ResetPasswordActivity"
+            android:label="Reset password"
             android:launchMode="singleTask" />
         <activity
             android:name=".activities.RegisterActivity"
+            android:label="Register"
             android:launchMode="singleTask" />
         <activity
             android:name=".activities.BaseActivity"
-            android:label="@string/title_activity_base"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PermissionActivity"
@@ -70,6 +79,7 @@
             android:label="PermissionActivity" />
         <activity
             android:name=".activities.AuthenticationActivity"
+            android:label="Login"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

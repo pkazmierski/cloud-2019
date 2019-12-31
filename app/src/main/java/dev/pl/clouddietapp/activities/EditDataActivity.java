@@ -134,7 +134,8 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
                 index,
                 userAttributes.get("custom:gender").equals("1") ? Gender.MALE : Gender.FEMALE,
                 userAttributes.get("custom:location"),
-                null
+                DataStore.getUserData().getPreferences(),
+                DataStore.getUserData().getRecommendedRecipes()
         ));
 
         Logic.appSyncDb.getUserData(null, null);
