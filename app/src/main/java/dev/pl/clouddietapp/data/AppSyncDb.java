@@ -1,22 +1,29 @@
 package dev.pl.clouddietapp.data;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipesQuery;
 import com.amazonaws.amplify.generated.graphql.UpdateUserDataMutation;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import dev.pl.clouddietapp.R;
+import dev.pl.clouddietapp.models.Gender;
 import dev.pl.clouddietapp.models.Recipe;
 import dev.pl.clouddietapp.models.RecipeType;
 import dev.pl.clouddietapp.models.UserData;
@@ -35,6 +42,46 @@ public class AppSyncDb {
 //    private String foodDefinitionsNextToken;
 
     public AppSyncDb() {
+    }
+
+    Map<String, String> userAttributes;
+
+    private void parseUserAttributes(Context ctx) {
+        String[] activityArr = ctx.getResources().getStringArray(R.array.spinnerActivity);
+        int index = Arrays.asList(activityArr).indexOf(userAttributes.get("custom:physicalActivity"));
+
+        DataStore.setUserData(new UserData(AWSMobileClient.getInstance().getUsername(),
+                userAttributes.get("custom:name"),
+                Integer.valueOf(userAttributes.get("custom:age")),
+                Integer.valueOf(userAttributes.get("custom:height")),
+                Double.valueOf(userAttributes.get("custom:weight")),
+                index,
+                userAttributes.get("custom:gender").equals("1") ? Gender.MALE : Gender.FEMALE,
+                userAttributes.get("custom:location"),
+                null
+        ));
+    }
+
+    public void getUserAttributes(Runnable onSuccess, Runnable onFailure, Context ctx) {
+        Callback<Map<String, String>> userAttributesCallback = new Callback<Map<String, String>>() {
+            @Override
+            public void onResult(Map<String, String> result) {
+                Log.d(TAG, "userAttributesCallback onResult: " + result.toString());
+
+                userAttributes = result;
+                parseUserAttributes(ctx);
+                onSuccess.run();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "onError: " + e.getLocalizedMessage());
+                e.printStackTrace();
+                onFailure.run();
+            }
+
+        };
+        AWSMobileClient.getInstance().getUserAttributes(userAttributesCallback);
     }
 
     /*private UserPreferences parseUserPreferences(GetUserDataQuery.Data queryData) {
@@ -206,7 +253,7 @@ public class AppSyncDb {
             public void onResponse(@Nonnull Response<GetUserDataQuery.Data> response) {
 
 //                DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
-                if(response.data().getUserData().maxDistanceToSupermarket() == null) {
+                if (response.data().getUserData().maxDistanceToSupermarket() == null) {
                     DataStore.getUserData().setPreferences(new UserPreferences(10));
                 } else {
                     DataStore.getUserData().setPreferences(new UserPreferences(response.data().getUserData().maxDistanceToSupermarket()));
@@ -351,7 +398,7 @@ public class AppSyncDb {
         };
 
         ModelRecipeFilterInput modelRecipeFilterInput = ModelRecipeFilterInput.builder()
-                .calories(ModelIntFilterInput.builder().ge(calories-50).lt(calories+50).build())
+                .calories(ModelIntFilterInput.builder().ge(calories - 50).lt(calories + 50).build())
                 .type(ModelStringFilterInput.builder().eq(type.toString()).build())
                 .build();
 

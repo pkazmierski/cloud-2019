@@ -42,6 +42,10 @@ public class MainActivity extends BaseActivity {
         DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
         Logic.appSyncDb.getUserData(afterGettingUserData, null);
+
+        Runnable gotUserAttributes = () -> Log.d(TAG, "gotUserAttributes: " + DataStore.getUserData().toString());
+
+        Logic.appSyncDb.getUserAttributes(gotUserAttributes, null, this);
     }
 
     public void printUserData(View view) {
