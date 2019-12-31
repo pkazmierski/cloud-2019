@@ -29,7 +29,7 @@ public class RecipesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams")
-        View contentView = inflater.inflate(R.layout.activity_dishes, null, false);
+        View contentView = inflater.inflate(R.layout.activity_recipes, null, false);
         drawer.addView(contentView, 0);
 
         Logic.initAppSync(this);
