@@ -1,7 +1,9 @@
 package dev.pl.clouddietapp.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DecimalFormat;
@@ -40,7 +43,7 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     private static final String TAG = "EditDataActivity";
 
     TextView editDataBMRLabel;
-    Button editDataSaveBtn;
+    Button editDataSaveBtn, editDataLocationBtn;
     Spinner editDataSpinner;
     RadioButton editDataRadioFemale, editDataRadioMale;
     TextInputEditText editDataHeightTxt, editDataWeightTxt, editDataAgeTxt;
@@ -48,6 +51,7 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     Map<String, String> userAttributes;
 
     String activityLevel;
+    LatLng location = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
 
         editDataBMRLabel = findViewById(R.id.editDataBMRLabel);
         editDataSaveBtn = findViewById(R.id.editDataSaveBtn);
+        editDataLocationBtn = findViewById(R.id.editDataLocationBtn);
         editDataSpinner = findViewById(R.id.editDataSpinner);
         editDataRadioFemale = findViewById(R.id.editDataRadioFemale);
         editDataRadioMale = findViewById(R.id.editDataRadioMale);
@@ -66,9 +71,9 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
         editDataWeightTxt = findViewById(R.id.editDataWeightTxt);
         editDataAgeTxt = findViewById(R.id.editDataAgeTxt);
 
-        editDataHeightTxt.setFilters(new InputFilter[]{ new IntInputFilterMinMax("0", "250")});
-        editDataWeightTxt.setFilters(new InputFilter[]{ new IntInputFilterMinMax("0", "300")});
-        editDataAgeTxt.setFilters(new InputFilter[]{ new IntInputFilterMinMax("0", "130")});
+        editDataHeightTxt.setFilters(new InputFilter[]{new IntInputFilterMinMax("0", "250")});
+        editDataWeightTxt.setFilters(new InputFilter[]{new IntInputFilterMinMax("0", "300")});
+        editDataAgeTxt.setFilters(new InputFilter[]{new IntInputFilterMinMax("0", "130")});
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerActivity, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_multiline);
@@ -170,9 +175,11 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
         AtomicBoolean status = new AtomicBoolean(false);
 
         runOnUiThread(() -> {
-            if (age.isEmpty())
+            if (location == null)
+                Toast.makeText(getApplicationContext(), "Choose your location", Toast.LENGTH_SHORT).show();
+            else if (age.isEmpty())
                 Toast.makeText(getApplicationContext(), "Empty age", Toast.LENGTH_SHORT).show();
-            else if(Integer.valueOf(age) < 9)
+            else if (Integer.valueOf(age) < 9)
                 Toast.makeText(getApplicationContext(), "Age cannot be lower than 9", Toast.LENGTH_SHORT).show();
             else if (height.isEmpty())
                 Toast.makeText(getApplicationContext(), "Empty height", Toast.LENGTH_SHORT).show();
@@ -194,6 +201,25 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void editDataLocationBtn(View view) {
+        Intent i = new Intent(this, PickLocationActivity.class);
+        startActivityForResult(i, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                location = data.getParcelableExtra("location");
+                Log.d(TAG, "gotLocation: " + location);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "Location not chosen", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void saveBtnHandler(View view) {
@@ -229,12 +255,15 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
             newAtr.put("custom:weight", weight);
             newAtr.put("custom:gender", gender);
             newAtr.put("custom:physicalActivity", activity);
+            newAtr.put("custom:location", location == null ? "" : location.toString());
+
 
             userAttributes.put("custom:age", age);
             userAttributes.put("custom:height", height);
             userAttributes.put("custom:weight", weight);
             userAttributes.put("custom:gender", gender);
             userAttributes.put("custom:physicalActivity", activity);
+            userAttributes.put("custom:location", location == null ? "" : location.toString());
 
             parseUserData();
             updateBMR();

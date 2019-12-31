@@ -35,7 +35,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         usrname = (EditText) findViewById(R.id.signInUsername);
         passwrd = (EditText) findViewById(R.id.signInPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        registerLink = (TextView) findViewById(R.id.registerLink);
+        registerLink = (TextView) findViewById(R.id.registerButton);
 
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
 

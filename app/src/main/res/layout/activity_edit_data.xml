@@ -99,7 +99,7 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="10dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -113,27 +113,46 @@
         android:id="@+id/editDataBMRLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text=""
+        android:text="-"
         android:textAlignment="center"
-        android:textColor="@color/quantum_googblue"
+        android:textColor="@color/colorAccent"
         android:textSize="36sp"
         android:textStyle="bold" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp" />
+
+    <Button
+        android:id="@+id/editDataLocationBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:onClick="editDataLocationBtn"
+        android:text="@string/enter_location"
+        android:textAllCaps="true"
+        android:textColor="@color/quantum_white_100"
+        android:textSize="16sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp" />
+
     <Button
         android:id="@+id/editDataSaveBtn"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_gravity="center"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="10dp"
+        android:onClick="saveBtnHandler"
         android:text="@string/save"
-        android:textSize="16sp"
-        android:onClick="saveBtnHandler" />
+        android:textAllCaps="true"
+        android:textColor="@color/quantum_white_100"
+        android:textSize="16sp" />
 
 
 </LinearLayout>

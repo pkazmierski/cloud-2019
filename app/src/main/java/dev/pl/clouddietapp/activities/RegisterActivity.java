@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         buttonVerify.setVisibility(View.GONE);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerActivity, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_multiline);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
