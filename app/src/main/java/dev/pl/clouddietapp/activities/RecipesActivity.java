@@ -1,27 +1,35 @@
 package dev.pl.clouddietapp.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.pl.clouddietapp.R;
 import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
 import dev.pl.clouddietapp.models.Recipe;
+import dev.pl.clouddietapp.models.RecipeType;
 
 public class RecipesActivity extends BaseActivity {
+    private static final String TAG = "RecipesActivity";
 
     View rootView;
     TextView breakfastNameLabel, secondBreakfastNameLabel, dinnerNameLabel, afterDinnerNameLabel, supperNameLabel;
     View dish_list_breakfast, dish_list_secondbreakfast, dish_list_dinner, dish_list_afterdinner, dish_list_supper;
+    Button regenerateRecommendationsBtn;
+    ProgressDialog dialog;
 
     @SuppressLint({"SetTextI18n", "CutPasteId"})
     @Override
@@ -40,6 +48,10 @@ public class RecipesActivity extends BaseActivity {
         Logic.appSyncDb.getUserData(getUserDataSuccess, null);
 
         rootView = findViewById(R.id.dishes_layout);
+        regenerateRecommendationsBtn = findViewById(R.id.regenerateRecommendationsBtn);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Generating recommendations...");
+        dialog.setCancelable(false);
 
         //set labels
         {
@@ -111,9 +123,62 @@ public class RecipesActivity extends BaseActivity {
                     recipeDetails.putExtra("id", recommendations.get(4).getId());
                     startAnimatedActivity(recipeDetails);
                 });
+
+                regenerateRecommendationsBtn.setEnabled(true);
             });
+        } else {
+            Runnable gotUserAttributes = () -> {
+                generateRecommendationsAndSaveToProfile();
+                Runnable updatedUserData = () -> Log.d(TAG, "updated user data");
+                Logic.appSyncDb.updateUserData(updatedUserData, null, DataStore.getUserData());
+                runOnUiThread(() -> regenerateRecommendationsBtn.setEnabled(true));
+            };
+            Logic.appSyncDb.getUserAttributes(gotUserAttributes, null, this);
         }
     };
+
+    private void generateRecommendationsAndSaveToProfile() {
+        //        Runnable getFilteredRecipesSuccess = () -> Log.d("regenerateRecommendationsBtn", "gotFilteredRecipes");
+        Log.d(TAG, "generateRecommendationsAndSaveToProfile");
+
+        runOnUiThread(() -> dialog.show());
+
+        double bmr = Logic.calculateBMR();
+
+        List<Recipe> breakfasts = new ArrayList<>();
+        List<Recipe> secondBreakfasts = new ArrayList<>();
+        List<Recipe> dinners = new ArrayList<>();
+        List<Recipe> afterDinners = new ArrayList<>();
+        List<Recipe> suppers = new ArrayList<>();
+        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.BREAKFAST, (int) (bmr * 0.24), breakfasts);
+        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.SECOND_BREAKFAST, (int) (bmr * 0.145), secondBreakfasts);
+        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.DINNER, (int) (bmr * 0.31), dinners);
+        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.AFTER_DINNER, (int) (bmr * 0.10), afterDinners);
+        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.SUPPER, (int) (bmr * 0.205), suppers);
+
+        while (true) {
+            if (breakfasts.size() > 0 && secondBreakfasts.size() > 0 && dinners.size() > 0 && afterDinners.size() > 0 && suppers.size() > 0)
+                break;
+        }
+
+        List<Recipe> combined = new ArrayList<>();
+        combined.addAll(breakfasts);
+        combined.addAll(secondBreakfasts);
+        combined.addAll(dinners);
+        combined.addAll(afterDinners);
+        combined.addAll(suppers);
+
+        List<Recipe> recommended = Logic.recommendRecipes(combined);
+        DataStore.getUserData().setRecommendedRecipes(recommended);
+        getUserDataSuccess.run();
+
+        runOnUiThread(() -> dialog.dismiss());
+    }
+
+    public void regenerateRecommendationsBtn(View view) {
+        generateRecommendationsAndSaveToProfile();
+    }
+
 
 //    private void addTestDishesToUserProfile() {
 //        Recipe rec1 = new Recipe("f053159d-5d6c-4837-9f07-4b2dd2a061f0", "Płatki jaglane z mango", "Płatki jaglane zalać gorącą lub wrzącą wodą na około 5 minut. Do płatków dodać jogurt, łyżeczkę kakao, nasiona słonecznika i cynamon, całość wymieszać. Jaglankę przełożyć do miseczki, dodać pokrojone kostkę mango.", null, RecipeType.BREAKFAST, 424);
@@ -130,7 +195,7 @@ public class RecipesActivity extends BaseActivity {
 //        recs.add(rec5);
 //        DataStore.getUserData().setRecommendedRecipes(recs);
 //
-//        Logic.appSyncDb.setUserData(null, null, DataStore.getUserData());
+//        Logic.appSyncDb.updateUserData(null, null, DataStore.getUserData());
 //    }
 
 //    private void addTestRecipes() {

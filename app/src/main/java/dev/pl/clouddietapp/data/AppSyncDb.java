@@ -301,7 +301,7 @@ public class AppSyncDb {
                             }
                         }
                         DataStore.getUserData().setRecommendedRecipes(recommendedRecipes);
-                        Log.d(TAG, "fromcache: " + response.fromCache());
+//                        Log.d(TAG, "fromcache: " + response.fromCache());
                         if (onSuccess != null)
                             onSuccess.run();
                     };
@@ -356,7 +356,7 @@ public class AppSyncDb {
                 .enqueue(createUserDataMutationCallback);
     }
 
-    public void setUserData(final Runnable onSuccess, final Runnable onFailure, UserData newUserData) {
+    public void updateUserData(final Runnable onSuccess, final Runnable onFailure, UserData newUserData) {
         GraphQLCall.Callback<UpdateUserDataMutation.Data> createUserDataMutationCallback = new GraphQLCall.Callback<UpdateUserDataMutation.Data>() {
             @Override
             public void onResponse(@Nonnull Response<UpdateUserDataMutation.Data> response) {
@@ -440,6 +440,8 @@ public class AppSyncDb {
             public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
                 assert response.data() != null;
                 assert response.data().listRecipes() != null;
+                if(response.data().listRecipes().items().size() == 0)
+                    Log.d("getFilteredRecipes", type.toString() + ": no items" );
 
                 filteredRecipeStorage.clear();
                 filteredRecipeStorage.addAll(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
