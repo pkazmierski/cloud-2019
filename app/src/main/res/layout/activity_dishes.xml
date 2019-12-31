@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize"
     android:id="@+id/dishes_layout"
-    tools:context=".activities.DishesActivity">
+    tools:context=".activities.RecipesActivity">
 
     <ScrollView
         android:id="@+id/scrollView2"

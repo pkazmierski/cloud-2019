@@ -44,7 +44,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                 Log.i(TAG, userStateDetails.getUserState().toString());
                 if (userStateDetails.getUserState() == UserState.SIGNED_IN) {
                     finish();
-                    Intent i = new Intent(AuthenticationActivity.this, DishesActivity.class);
+                    Intent i = new Intent(AuthenticationActivity.this, RecipesActivity.class);
                     startActivity(i);
                 }
             }
@@ -79,7 +79,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                 Log.i(TAG, userStateDetails.getUserState().toString());
                 switch (userStateDetails.getUserState()){
                     case SIGNED_IN:
-                        Intent i = new Intent(AuthenticationActivity.this, DishesActivity.class);
+                        Intent i = new Intent(AuthenticationActivity.this, RecipesActivity.class);
                         startActivity(i);
                         break;
                     case SIGNED_OUT:
@@ -111,7 +111,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                     switch (signInResult.getSignInState()) {
                         case DONE:
                             Toast.makeText(getApplicationContext(),"Sign-in done.", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(AuthenticationActivity.this, DishesActivity.class);
+                            Intent i = new Intent(AuthenticationActivity.this, RecipesActivity.class);
                             startActivity(i);
                             break;
                         case PASSWORD_VERIFIER:

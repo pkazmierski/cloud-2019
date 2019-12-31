@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import dev.pl.clouddietapp.R;
 import dev.pl.clouddietapp.adapters.FridgeContentsRecyclerViewAdapter;
-import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
 import dev.pl.clouddietapp.models.FoodDefinition;
 
@@ -63,10 +62,10 @@ public class FridgeContentsActivity extends BaseActivity {
     private void filter(String text) {
         ArrayList<FoodDefinition> filteredFoodDefinitions = new ArrayList<>();
 
-        for (FoodDefinition foodDefinition : DataStore.getFoodDefinitions()) {
-            if(foodDefinition.getName().toLowerCase().contains(text.toLowerCase()))
-                filteredFoodDefinitions.add(foodDefinition);
-        }
+//        for (FoodDefinition foodDefinition : DataStore.getFoodDefinitions()) {
+//            if(foodDefinition.getName().toLowerCase().contains(text.toLowerCase()))
+//                filteredFoodDefinitions.add(foodDefinition);
+//        }
 
         adapter.filterList(filteredFoodDefinitions);
     }
@@ -84,7 +83,7 @@ public class FridgeContentsActivity extends BaseActivity {
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.fridgeContentsRecyclerView);
-        adapter = new FridgeContentsRecyclerViewAdapter(this, DataStore.getFoodDefinitions());
+//        adapter = new FridgeContentsRecyclerViewAdapter(this, DataStore.getFoodDefinitions());
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

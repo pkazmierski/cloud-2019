@@ -22,13 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
-
-        <activity android:name=".activities.DishesActivity"
-            android:label="Dishes"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
+            android:name=".activities.RecipeDetailsActivity"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="Recipe details"/>
+        <activity
+            android:name=".activities.RecipesActivity"
+            android:label="Recipes"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:label="Edit data"
             android:name=".activities.EditDataActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 

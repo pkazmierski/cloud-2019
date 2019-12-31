@@ -28,20 +28,20 @@ public class DataStore {
         DataStore.recipes.addAll(recipes);
     }
 
-    public static ArrayList<FoodDefinition> getFoodDefinitions() {
-        return foodDefinitions;
-    }
+//    public static ArrayList<FoodDefinition> getFoodDefinitions() {
+//        return foodDefinitions;
+//    }
 
-    public static void setFoodDefinitions(ArrayList<FoodDefinition> foodDefinitions) {
-        DataStore.foodDefinitions.clear();
-        DataStore.foodDefinitions.addAll(foodDefinitions);
-    }
-
-    public static FoodDefinition getFoodDefinitionById(String foodId) {
-        for(FoodDefinition foodDefinition : foodDefinitions) {
-            if(foodDefinition.getId().equals(foodId))
-                return foodDefinition;
-        }
-        return null;
-    }
+//    public static void setFoodDefinitions(ArrayList<FoodDefinition> foodDefinitions) {
+//        DataStore.foodDefinitions.clear();
+//        DataStore.foodDefinitions.addAll(foodDefinitions);
+//    }
+//
+//    public static FoodDefinition getFoodDefinitionById(String foodId) {
+//        for(FoodDefinition foodDefinition : foodDefinitions) {
+//            if(foodDefinition.getId().equals(foodId))
+//                return foodDefinition;
+//        }
+//        return null;
+//    }
 }
