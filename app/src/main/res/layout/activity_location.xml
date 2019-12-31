@@ -26,7 +26,7 @@
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:layout_weight="70"
+            android:layout_weight="5"
             android:enabled="false"
             android:onClick="doneBtn"
             android:text="@string/done"
