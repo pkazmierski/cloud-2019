@@ -83,9 +83,9 @@
             android:label="PermissionActivity" />
         <activity
             android:name=".activities.AuthenticationActivity"
-            android:label="Login"
+            android:label="@string/app_name"
             android:noHistory="true">
-            <intent-filter>
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

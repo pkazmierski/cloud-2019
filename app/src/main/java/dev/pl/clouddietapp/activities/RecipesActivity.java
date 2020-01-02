@@ -41,7 +41,8 @@ public class RecipesActivity extends BaseActivity {
         drawer.addView(contentView, 0);
 
         Logic.initAppSync(this);
-        DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
+        if(DataStore.getUserData().getUsername() == null || DataStore.getUserData().getUsername().isEmpty())
+            DataStore.getUserData().setUsername(AWSMobileClient.getInstance().getUsername());
 
         Logic.appSyncDb.getUserAttributes(null, null, this);
 
@@ -51,7 +52,7 @@ public class RecipesActivity extends BaseActivity {
         regenerateRecommendationsBtn = findViewById(R.id.regenerateRecommendationsBtn);
         dialog = new ProgressDialog(this);
         dialog.setMessage("Generating recommendations...");
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
 
         //set labels
         {

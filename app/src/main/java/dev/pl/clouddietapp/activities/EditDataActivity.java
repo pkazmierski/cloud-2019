@@ -86,6 +86,12 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
                 Log.d(TAG, "userAttributesCallback onResult: " + result.toString());
 
                 userAttributes = result;
+                String locationString = userAttributes.get("custom:location");
+                assert locationString != null;
+                locationString = locationString.substring(10);
+                locationString = locationString.substring(0, locationString.length()-1);
+                String[] locSplit = locationString.split(",");
+                location = new LatLng(Double.valueOf(locSplit[0]), Double.valueOf(locSplit[1]));
 
                 runOnUiThread(() -> {
                     editDataSpinner.setSelection(getIndex(editDataSpinner, userAttributes.get("custom:physicalActivity")));
@@ -205,7 +211,7 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     }
 
     public void editDataLocationBtn(View view) {
-        Intent i = new Intent(this, LocationPermissionActivity.class);
+        Intent i = new Intent(this, PermissionActivity.class);
         startActivityForResult(i, 1);
     }
 
