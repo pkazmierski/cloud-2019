@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.pl.clouddietapp.R;
 import dev.pl.clouddietapp.data.DataStore;
@@ -130,7 +132,7 @@ public class RecipesActivity extends BaseActivity {
         } else {
             Runnable gotUserAttributes = () -> {
                 generateRecommendationsAndSaveToProfile();
-                Runnable updatedUserData = () -> Log.d(TAG, "updated user data");
+                Runnable updatedUserData = () -> Log.d(TAG, "Updated user data");
                 Logic.appSyncDb.updateUserData(updatedUserData, null, DataStore.getUserData());
                 runOnUiThread(() -> regenerateRecommendationsBtn.setEnabled(true));
             };
@@ -140,7 +142,7 @@ public class RecipesActivity extends BaseActivity {
 
     private void generateRecommendationsAndSaveToProfile() {
         //        Runnable getFilteredRecipesSuccess = () -> Log.d("regenerateRecommendationsBtn", "gotFilteredRecipes");
-        Log.d(TAG, "generateRecommendationsAndSaveToProfile");
+        Log.d(TAG, "Generating recipe recommendations");
 
         runOnUiThread(() -> dialog.show());
 
@@ -151,15 +153,24 @@ public class RecipesActivity extends BaseActivity {
         List<Recipe> dinners = new ArrayList<>();
         List<Recipe> afterDinners = new ArrayList<>();
         List<Recipe> suppers = new ArrayList<>();
-        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.BREAKFAST, (int) (bmr * 0.24), breakfasts);
-        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.SECOND_BREAKFAST, (int) (bmr * 0.145), secondBreakfasts);
-        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.DINNER, (int) (bmr * 0.31), dinners);
-        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.AFTER_DINNER, (int) (bmr * 0.10), afterDinners);
-        Logic.appSyncDb.getFilteredRecipes(null, null, RecipeType.SUPPER, (int) (bmr * 0.205), suppers);
+        AtomicBoolean emptyArrayReceived = new AtomicBoolean(false);
+        Runnable setEmptyArrayReceived = () -> emptyArrayReceived.set(true);
+        Logic.appSyncDb.getFilteredRecipes(null, null, setEmptyArrayReceived, RecipeType.BREAKFAST, (int) (bmr * 0.24), breakfasts);
+        Logic.appSyncDb.getFilteredRecipes(null, null, setEmptyArrayReceived, RecipeType.SECOND_BREAKFAST, (int) (bmr * 0.145), secondBreakfasts);
+        Logic.appSyncDb.getFilteredRecipes(null, null, setEmptyArrayReceived, RecipeType.DINNER, (int) (bmr * 0.31), dinners);
+        Logic.appSyncDb.getFilteredRecipes(null, null, setEmptyArrayReceived, RecipeType.AFTER_DINNER, (int) (bmr * 0.10), afterDinners);
+        Logic.appSyncDb.getFilteredRecipes(null, null, setEmptyArrayReceived, RecipeType.SUPPER, (int) (bmr * 0.205), suppers);
 
         while (true) {
             if (breakfasts.size() > 0 && secondBreakfasts.size() > 0 && dinners.size() > 0 && afterDinners.size() > 0 && suppers.size() > 0)
                 break;
+            else if(emptyArrayReceived.get()) {
+                runOnUiThread(() -> {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Cannot generate for current BMR", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
         }
 
         List<Recipe> combined = new ArrayList<>();
@@ -172,12 +183,15 @@ public class RecipesActivity extends BaseActivity {
         List<Recipe> recommended = Logic.recommendRecipes(combined);
         DataStore.getUserData().setRecommendedRecipes(recommended);
         getUserDataSuccess.run();
+        Log.d(TAG, "Recommendations generated");
 
         runOnUiThread(() -> dialog.dismiss());
     }
 
     public void regenerateRecommendationsBtn(View view) {
         generateRecommendationsAndSaveToProfile();
+        Runnable updatedUserData = () -> Log.d(TAG, "Updated user data");
+        Logic.appSyncDb.updateUserData(updatedUserData, null, DataStore.getUserData());
     }
 
 

@@ -434,14 +434,16 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
-    public void getFilteredRecipes(final Runnable onSuccess, final Runnable onFailure, final RecipeType type, final int calories, final List<Recipe> filteredRecipeStorage) {
+    public void getFilteredRecipes(final Runnable onSuccess, final Runnable onFailure, final Runnable onEmptyArrayReceived, final RecipeType type, final int calories, final List<Recipe> filteredRecipeStorage) {
         GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
                 assert response.data() != null;
                 assert response.data().listRecipes() != null;
-                if(response.data().listRecipes().items().size() == 0)
-                    Log.d("getFilteredRecipes", type.toString() + ": no items" );
+                if(response.data().listRecipes().items().size() == 0) {
+                    Log.d("getFilteredRecipes", type.toString() + ": no items");
+                    onEmptyArrayReceived.run();
+                }
 
                 filteredRecipeStorage.clear();
                 filteredRecipeStorage.addAll(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
