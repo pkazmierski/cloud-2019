@@ -262,10 +262,13 @@ public class RecipeDetailsActivity extends BaseActivity {
                         //todo dynamiczne dodawanie imageview
                         ImageView imageView = new ImageView(ctx);
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        lp.bottomMargin = 10;
+                        lp.topMargin = 10;
 
                         imageView.setLayoutParams(lp);
                         imageView.setAdjustViewBounds(true);
                         imageView.setContentDescription(photo);
+                        imageView.setImageBitmap(Logic.decodeSampledBitmapFromFile(localUrl, 400, 400));
 
                         descAndPhotosLinearLayout.addView(imageView);
                     }
@@ -286,5 +289,7 @@ public class RecipeDetailsActivity extends BaseActivity {
                 }
             });
         }
+
+
     }
 }
