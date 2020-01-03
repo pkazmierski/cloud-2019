@@ -123,7 +123,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     }
 
     public void getLocationBtn(View view) {
-        Intent i = new Intent(this, PickLocationActivity.class);
+        Intent i = new Intent(this, LocationPermissionActivity.class);
         startActivityForResult(i, 1);
     }
 

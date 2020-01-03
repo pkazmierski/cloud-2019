@@ -1,20 +1,23 @@
 package dev.pl.clouddietapp.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -27,6 +30,8 @@ import dev.pl.clouddietapp.R;
 public class LocationPermissionActivity extends AppCompatActivity {
 
     private Button btnGrant;
+    LatLng location = null;
+    private static final String TAG = "LocationPermissionActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,7 @@ public class LocationPermissionActivity extends AppCompatActivity {
                         .withListener(new PermissionListener() {
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse response) {
-                                startActivity(new Intent(LocationPermissionActivity.this, PickLocationActivity.class));
+                                startActivityForResult(new Intent(LocationPermissionActivity.this, PickLocationActivity.class), 1);
                                 finish();
                             }
 
@@ -80,5 +85,19 @@ public class LocationPermissionActivity extends AppCompatActivity {
                         .check();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                location = data.getParcelableExtra("location");
+                Log.d(TAG, "gotLocation: " + location);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "Location not chosen", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
