@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.amazonaws.amplify.generated.graphql.CreateRecipeMutation;
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
+import com.amazonaws.amplify.generated.graphql.DeleteRecipePhotoMutation;
 import com.amazonaws.amplify.generated.graphql.GetRecipeQuery;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipePhotosQuery;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import dev.pl.clouddietapp.R;
+import dev.pl.clouddietapp.models.DatabasePhoto;
 import dev.pl.clouddietapp.models.Gender;
 import dev.pl.clouddietapp.models.Recipe;
 import dev.pl.clouddietapp.models.RecipeType;
@@ -34,6 +36,8 @@ import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
 import type.CreateRecipeInput;
 import type.CreateUserDataInput;
+import type.DeleteRecipeInput;
+import type.DeleteRecipePhotoInput;
 import type.ModelIDFilterInput;
 import type.ModelIntFilterInput;
 import type.ModelRecipeFilterInput;
@@ -607,7 +611,6 @@ public class AppSyncDb {
                     return;
                 }
 
-                //todo data processing
                 photoIds.clear();
                 for (ListRecipePhotosQuery.Item item : response.data().listRecipePhotos().items()) {
                     photoIds.add(item.storagePhotoId());
@@ -638,6 +641,129 @@ public class AppSyncDb {
                 .build())
                 .responseFetcher(responseFetcher)
                 .enqueue(listRecipePhotosCallback);
+    }
+
+    public void getPhotosForLoggedInUser(final Runnable onSuccess, final Runnable onFailure, final List<DatabasePhoto> databasePhotos) {
+        final int methodNameLength = new Object() {}.getClass().getEnclosingMethod().getName().length();
+        final String methodName = new Object() {}.getClass().getEnclosingMethod().getName().substring(0, methodNameLength < 23 ? methodNameLength : 22);
+
+        if(DataStore.getUserData().getUsername() == null || DataStore.getUserData().getUsername().isEmpty()) {
+            Log.e(methodName, "username is null or empty");
+            return;
+        }
+
+        GraphQLCall.Callback<ListRecipePhotosQuery.Data> listRecipePhotosCallback = new GraphQLCall.Callback<ListRecipePhotosQuery.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<ListRecipePhotosQuery.Data> response) {
+                if (response.hasErrors()) {
+                    Log.e(methodName, response.errors().toString());
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if(response.data() == null) {
+                    Log.e(methodName, "data() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if (response.data().listRecipePhotos() == null) {
+                    Log.e(methodName, "listRecipePhotos() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if (response.data().listRecipePhotos().items() == null) {
+                    Log.e(methodName, "response.data().listRecipePhotos().items() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if(response.data().listRecipePhotos().items().size() == 0) {
+                    Log.e(methodName, "response.data().listRecipePhotos().items() is empty");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                databasePhotos.clear();
+                for (ListRecipePhotosQuery.Item item : response.data().listRecipePhotos().items()) {
+                    databasePhotos.add(new DatabasePhoto(item.id(), item.storagePhotoId(), item.recipeId(), item.owner()));
+                }
+
+                if (onSuccess != null)
+                    onSuccess.run();
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("methodName", "Error: " + e.toString());
+                if (onFailure != null)
+                    onFailure.run();
+            }
+        };
+
+        ModelStringFilterInput modelStringFilterInput = ModelStringFilterInput.builder().eq(DataStore.getUserData().getUsername()).build();
+        ModelRecipePhotoFilterInput modelRecipePhotoFilterInput = ModelRecipePhotoFilterInput.builder().owner(modelStringFilterInput).build();
+
+        appSyncClient.query(ListRecipePhotosQuery.builder()
+                .filter(modelRecipePhotoFilterInput)
+                .build())
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
+                .enqueue(listRecipePhotosCallback);
+    }
+
+    public void deletePhotoFromDynamo(final Runnable onSuccess, final Runnable onFailure, final String dynamoPhotoId) {
+        GraphQLCall.Callback<DeleteRecipePhotoMutation.Data> listRecipesQueryCallback = new GraphQLCall.Callback<DeleteRecipePhotoMutation.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<DeleteRecipePhotoMutation.Data> response) {
+                if (response.hasErrors()) {
+                    Log.e(TAG, "deletePhotoFromDynamo: " + response.errors());
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+                if(response.data() == null) {
+                    Log.e(TAG, "deletePhotoFromDynamo: " + response.toString());
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+                if (response.data().deleteRecipePhoto() == null) {
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+
+                if (onSuccess != null)
+                    onSuccess.run();
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("ERROR", e.toString());
+                if (onFailure != null)
+                    onFailure.run();
+            }
+        };
+
+
+        if(dynamoPhotoId == null || dynamoPhotoId.isEmpty()) {
+            Log.e(TAG, "photoId is empty or null in deletePhotoFromDynamo");
+            return;
+        }
+
+        DeleteRecipePhotoInput deleteRecipeInput = DeleteRecipePhotoInput.builder().id(dynamoPhotoId).build();
+
+        appSyncClient.mutate(DeleteRecipePhotoMutation.builder()
+                .input(deleteRecipeInput)
+                .build())
+                .enqueue(listRecipesQueryCallback);
     }
 
 //    public void getAllRecipesNext(final Runnable onSuccess, final Runnable onFailure) {

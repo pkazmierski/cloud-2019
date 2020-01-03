@@ -43,6 +43,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import dev.pl.clouddietapp.R;
+import dev.pl.clouddietapp.data.DataStore;
 import dev.pl.clouddietapp.logic.Logic;
 import dev.pl.clouddietapp.models.Recipe;
 import type.CreateRecipePhotoInput;
@@ -229,6 +230,7 @@ public class RecipeDetailsActivity extends BaseActivity {
             CreateRecipePhotoInput createRecipePhotoInput = CreateRecipePhotoInput.builder()
                     .recipeId(recipeId)
                     .storagePhotoId(photoS3Key)
+                    .owner(DataStore.getUserData().getUsername())
                     .build();
 
             appSyncClient.mutate(CreateRecipePhotoMutation.builder()
@@ -259,7 +261,6 @@ public class RecipeDetailsActivity extends BaseActivity {
                     if (TransferState.COMPLETED == state) {
                         // Handle a completed upload.
                         localUrl = localPath;
-                        //todo dynamiczne dodawanie imageview
                         ImageView imageView = new ImageView(ctx);
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         lp.bottomMargin = 10;

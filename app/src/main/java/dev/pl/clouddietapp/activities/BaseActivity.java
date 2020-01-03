@@ -58,6 +58,8 @@ public class BaseActivity extends AppCompatActivity
             startAnimatedActivity(new Intent(getApplicationContext(), PreferenceActivity.class));
         } else if(id == R.id.nav_user_data) {
             startAnimatedActivity(new Intent(getApplicationContext(), EditDataActivity.class));
+        } else if(id == R.id.nav_delete_photos) {
+            startAnimatedActivity(new Intent(getApplicationContext(), PhotoRemoverActivity.class));
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

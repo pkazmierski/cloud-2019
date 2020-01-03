@@ -37,10 +37,12 @@
                 android:id="@+id/nav_user_data"
                 android:icon="@drawable/ic_person_black_24dp"
                 android:title="@string/user_data" />
-            <!--            <item-->
-            <!--                android:id="@+id/nav_send"-->
-            <!--                android:icon="@drawable/ic_menu_share"-->
-            <!--                android:title="About" />-->
+
+            <item
+                android:id="@+id/nav_delete_photos"
+                android:icon="@drawable/ic_insert_photo_black_24dp"
+                android:title="@string/delete_photos" />
+
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_vpn_key_gray_24dp"

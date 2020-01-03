@@ -23,16 +23,20 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+            android:name=".activities.PhotoRemoverActivity"
+            android:label="Photo removal"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.RecipeDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Recipe details"/>
+            android:label="Recipe details"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.RecipesActivity"
             android:label="Recipes"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:label="Edit data"
             android:name=".activities.EditDataActivity"
+            android:label="Edit data"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
