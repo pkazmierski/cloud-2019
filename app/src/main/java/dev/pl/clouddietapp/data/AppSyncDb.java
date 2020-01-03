@@ -7,6 +7,7 @@ import com.amazonaws.amplify.generated.graphql.CreateRecipeMutation;
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
 import com.amazonaws.amplify.generated.graphql.GetRecipeQuery;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
+import com.amazonaws.amplify.generated.graphql.ListRecipePhotosQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipesQuery;
 import com.amazonaws.amplify.generated.graphql.UpdateUserDataMutation;
 import com.amazonaws.mobile.client.AWSMobileClient;
@@ -33,8 +34,10 @@ import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
 import type.CreateRecipeInput;
 import type.CreateUserDataInput;
+import type.ModelIDFilterInput;
 import type.ModelIntFilterInput;
 import type.ModelRecipeFilterInput;
+import type.ModelRecipePhotoFilterInput;
 import type.ModelStringFilterInput;
 import type.UpdateUserDataInput;
 
@@ -398,7 +401,7 @@ public class AppSyncDb {
     private ArrayList<Recipe> parseRecipes(List<ListRecipesQuery.Item> dbRecipes) {
         ArrayList<Recipe> parsedRecipes = new ArrayList<>();
         for (ListRecipesQuery.Item dbRecipe : dbRecipes) {
-            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.name(), dbRecipe.content(), dbRecipe.photos(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
+            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.name(), dbRecipe.content(), dbRecipe.photo(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
             parsedRecipes.add(recipe);
         }
         return parsedRecipes;
@@ -472,7 +475,7 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
-    private void getRecipeById(final Runnable onSuccess, final Runnable onFailure, final String recipeId, final Recipe returnRecipe, ResponseFetcher responseFetcher) {
+    public void getRecipeById(final Runnable onSuccess, final Runnable onFailure, final String recipeId, final Recipe returnRecipe, ResponseFetcher responseFetcher) {
         GraphQLCall.Callback<GetRecipeQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<GetRecipeQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<GetRecipeQuery.Data> response) {
@@ -482,8 +485,13 @@ public class AppSyncDb {
                         onFailure.run();
                     return;
                 }
-
-                assert response.data() != null;
+                if(response.data() == null) {
+                    Log.e(TAG, "getRecipeById: " + response.toString());
+                    Log.e(TAG, "getRecipeById errors: " + response.errors());
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
                 if (response.data().getRecipe() == null) {
                     if (onFailure != null)
                         onFailure.run();
@@ -497,7 +505,7 @@ public class AppSyncDb {
                 returnRecipe.setId(dbRec.id());
                 returnRecipe.setName(dbRec.name());
                 returnRecipe.setContent(dbRec.content());
-                returnRecipe.setPhotos(dbRec.photos());
+                returnRecipe.setPhoto(dbRec.photo());
                 returnRecipe.setCalories(dbRec.calories());
                 returnRecipe.setType(RecipeType.valueOf(dbRec.type()));
 
@@ -539,6 +547,11 @@ public class AppSyncDb {
 //        modelRecipeFilterInputs.add(modelRecipeFilterInput3);
 //        modelRecipeFilterInputs.add(modelRecipeFilterInput4);
 
+        if(recipeId == null || recipeId.isEmpty()) {
+            Log.e(TAG, "recipeId is empty in getRecipeById");
+            return;
+        }
+
         appSyncClient.query(GetRecipeQuery.builder()
                 .id(recipeId)
                 .build())
@@ -546,6 +559,86 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
+    public void getPhotosForRecipe(final Runnable onSuccess, final Runnable onFailure, final String recipeId, final List<String> photoIds) {
+        getPhotosForRecipe(onSuccess, onFailure, recipeId, photoIds, AppSyncResponseFetchers.CACHE_AND_NETWORK);
+    }
+
+    public void getPhotosForRecipe(final Runnable onSuccess, final Runnable onFailure, final String recipeId, final List<String> photoIds, ResponseFetcher responseFetcher) {
+        if(photoIds == null) {
+            Log.e(TAG, "photoIds is null in ListRecipePhotosQuery");
+            return;
+        }
+
+        GraphQLCall.Callback<ListRecipePhotosQuery.Data> listRecipePhotosCallback = new GraphQLCall.Callback<ListRecipePhotosQuery.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<ListRecipePhotosQuery.Data> response) {
+                if (response.hasErrors()) {
+                    Log.e(TAG, "ListRecipePhotosQuery: " + response.errors());
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if(response.data() == null) {
+                    Log.e(TAG, "ListRecipePhotosQuery: data() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if (response.data().listRecipePhotos() == null) {
+                    Log.e(TAG, "ListRecipePhotosQuery: listRecipePhotos() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if (response.data().listRecipePhotos().items() == null) {
+                    Log.e(TAG, "ListRecipePhotosQuery: response.data().listRecipePhotos().items() is null");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if(response.data().listRecipePhotos().items().size() == 0) {
+                    Log.e(TAG, "ListRecipePhotosQuery: response.data().listRecipePhotos().items() is empty");
+                    if (onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                //todo data processing
+                photoIds.clear();
+                for (ListRecipePhotosQuery.Item item : response.data().listRecipePhotos().items()) {
+                    photoIds.add(item.storagePhotoId());
+                }
+
+                if (onSuccess != null)
+                    onSuccess.run();
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("ERROR", e.toString());
+                if (onFailure != null)
+                    onFailure.run();
+            }
+        };
+
+        if(recipeId == null || recipeId.isEmpty()) {
+            Log.e(TAG, "recipeId is empty in ListRecipePhotosQuery");
+            return;
+        }
+
+        ModelIDFilterInput modelIDFilterInput = ModelIDFilterInput.builder().eq(recipeId).build();
+        ModelRecipePhotoFilterInput modelRecipePhotoFilterInput = ModelRecipePhotoFilterInput.builder().recipeId(modelIDFilterInput).build();
+
+        appSyncClient.query(ListRecipePhotosQuery.builder()
+                .filter(modelRecipePhotoFilterInput)
+                .build())
+                .responseFetcher(responseFetcher)
+                .enqueue(listRecipePhotosCallback);
+    }
 
 //    public void getAllRecipesNext(final Runnable onSuccess, final Runnable onFailure) {
 //        GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
@@ -591,7 +684,7 @@ public class AppSyncDb {
         CreateRecipeInput createRecipeInput = CreateRecipeInput.builder()
                 .name(recipe.getName())
                 .content(recipe.getContent())
-                .photos(recipe.getPhotos()) //remove later
+                .photo(recipe.getPhoto()) //remove later
                 .calories(recipe.getCalories())
                 .type(recipe.getType().toString())
                 .build();

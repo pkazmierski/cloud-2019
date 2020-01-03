@@ -7,8 +7,18 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -21,9 +31,12 @@ import dev.pl.clouddietapp.models.RecipeType;
 import dev.pl.clouddietapp.models.UserData;
 
 public class Logic {
-    public static AWSAppSyncClient appSyncClient;
+    private static final String TAG = "Logic";
+
+    public static AWSAppSyncClient appSyncClient = null;
     public static AppSyncDb appSyncDb = new AppSyncDb();
     private static boolean init = false;
+    public static TransferUtility transferUtility = null;
 
     public static void initAppSync(Context ctx) {
         if (!init) {
@@ -44,6 +57,12 @@ public class Logic {
                     })
                     .build();
             init = true;
+
+            transferUtility = TransferUtility.builder()
+                    .context(ctx)
+                    .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                    .s3Client(new AmazonS3Client(AWSMobileClient.getInstance()))
+                    .build();
         }
     }
 
@@ -101,6 +120,46 @@ public class Logic {
         toReturn.add(supper);
 
         return toReturn;
+    }
+
+    public static String calculateMD5(File updateFile) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Exception while getting digest", e);
+            return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String output = bigInt.toString(16);
+            // Fill to 32 chars
+            output = String.format("%32s", output).replace(' ', '0');
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for MD5", e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception on closing MD5 input stream", e);
+            }
+        }
     }
 
     public static double calculateBMR() {

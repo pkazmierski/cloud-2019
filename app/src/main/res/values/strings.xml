@@ -67,4 +67,7 @@
     <string name="recipe_type">Recipe type</string>
     <string name="menu_recipes">Recipes</string>
     <string name="re_generate_recommendations">Regenerate recommendations</string>
+    <string name="dish_description">Dish description</string>
+    <string name="add_a_photo">Add a photo</string>
+    <string name="recipe_image">Recipe image</string>
 </resources>

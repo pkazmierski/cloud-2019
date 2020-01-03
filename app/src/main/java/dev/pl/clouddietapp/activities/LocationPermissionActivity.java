@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -30,7 +29,6 @@ import dev.pl.clouddietapp.R;
 public class LocationPermissionActivity extends AppCompatActivity {
 
     private Button btnGrant;
-    LatLng location = null;
     private static final String TAG = "LocationPermissionActivity";
 
     @Override
@@ -38,11 +36,6 @@ public class LocationPermissionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
 
-        if (ContextCompat.checkSelfPermission(LocationPermissionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startActivity(new Intent(LocationPermissionActivity.this, PickLocationActivity.class));
-            finish();
-            return;
-        }
         btnGrant = findViewById(R.id.btn_grant);
 
         btnGrant.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +47,6 @@ public class LocationPermissionActivity extends AppCompatActivity {
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse response) {
                                 startActivityForResult(new Intent(LocationPermissionActivity.this, PickLocationActivity.class), 1);
-                                finish();
                             }
 
                             @Override
@@ -85,6 +77,11 @@ public class LocationPermissionActivity extends AppCompatActivity {
                         .check();
             }
         });
+
+        if (ContextCompat.checkSelfPermission(LocationPermissionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Intent i = new Intent(LocationPermissionActivity.this, PickLocationActivity.class);
+            startActivityForResult(i, 1);
+        }
     }
 
     @Override
@@ -92,11 +89,16 @@ public class LocationPermissionActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                location = data.getParcelableExtra("location");
-                Log.d(TAG, "gotLocation: " + location);
+                LatLng location = data.getParcelableExtra("location");
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("location", location);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(getApplicationContext(), "Location not chosen", Toast.LENGTH_SHORT).show();
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED, returnIntent);
+                finish();
             }
         }
     }

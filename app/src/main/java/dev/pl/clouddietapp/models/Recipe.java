@@ -1,6 +1,5 @@
 package dev.pl.clouddietapp.models;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Recipe {
@@ -9,7 +8,7 @@ public class Recipe {
     //    private ArrayList<Food> foodList;
     private String name;
     private String content;
-    private List<String> photos;
+    private String photo;
     private RecipeType type;
     private int calories;
 
@@ -24,11 +23,11 @@ public class Recipe {
     }
 
 
-    public Recipe(String id, String name, String content, List<String> photos, RecipeType type, int calories) {
+    public Recipe(String id, String name, String content, String photo, RecipeType type, int calories) {
         this.id = id;
         this.name = name;
         this.content = content;
-        this.photos = photos;
+        this.photo = photo;
         this.type = type;
         this.calories = calories;
     }
@@ -36,7 +35,7 @@ public class Recipe {
     public Recipe(String id, String content, RecipeType type, int calories) {
         this.id = id;
         this.content = content;
-        this.photos = null;
+        this.photo = null;
         this.type = type;
         this.calories = calories;
     }
@@ -49,12 +48,12 @@ public class Recipe {
         this.name = name;
     }
 
-    public List<String> getPhotos() {
-        return photos;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public RecipeType getType() {
@@ -115,7 +114,7 @@ public class Recipe {
         return "Recipe{" +
                 "id='" + id + '\'' +
                 ", content='" + content + '\'' +
-                ", photos=" + photos +
+                ", photo=" + photo +
                 ", type=" + type +
                 ", calories=" + calories +
                 '}';
