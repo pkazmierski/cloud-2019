@@ -6,6 +6,7 @@ import android.util.Log;
 import com.amazonaws.amplify.generated.graphql.CreateRecipeMutation;
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
 import com.amazonaws.amplify.generated.graphql.DeleteRecipePhotoMutation;
+import com.amazonaws.amplify.generated.graphql.DeleteUserDataMutation;
 import com.amazonaws.amplify.generated.graphql.GetRecipeQuery;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipePhotosQuery;
@@ -36,8 +37,8 @@ import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
 import type.CreateRecipeInput;
 import type.CreateUserDataInput;
-import type.DeleteRecipeInput;
 import type.DeleteRecipePhotoInput;
+import type.DeleteUserDataInput;
 import type.ModelIDFilterInput;
 import type.ModelIntFilterInput;
 import type.ModelRecipeFilterInput;
@@ -272,6 +273,20 @@ public class AppSyncDb {
                     return;
                 }
 
+                if(response.data() == null) {
+                    Log.e("getUserData", "respone.data() is null");
+                    if(onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
+                if(response.data().getUserData() == null) {
+                    Log.e("getUserData", "respone.data().getUserData() is null");
+                    if(onFailure != null)
+                        onFailure.run();
+                    return;
+                }
+
                 //DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
                 if (response.data().getUserData().maxDistanceToSupermarket() == null)
                     DataStore.getUserData().setPreferences(new UserPreferences(10));
@@ -402,10 +417,34 @@ public class AppSyncDb {
                 .enqueue(createUserDataMutationCallback);
     }
 
+    public void deleteUserData(final Runnable onSuccess, final Runnable onFailure) {
+        GraphQLCall.Callback<DeleteUserDataMutation.Data> deleteUserDataCallback = new GraphQLCall.Callback<DeleteUserDataMutation.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<DeleteUserDataMutation.Data> response) {
+                if (onSuccess != null)
+                    onSuccess.run();
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("ERROR", e.toString());
+                if (onFailure != null)
+                    onFailure.run();
+            }
+        };
+
+        DeleteUserDataInput deleteUserDataInput = DeleteUserDataInput.builder().id(DataStore.getUserData().getUsername()).build();
+
+        appSyncClient.mutate(DeleteUserDataMutation.builder()
+                .input(deleteUserDataInput)
+                .build())
+                .enqueue(deleteUserDataCallback);
+    }
+
     private ArrayList<Recipe> parseRecipes(List<ListRecipesQuery.Item> dbRecipes) {
         ArrayList<Recipe> parsedRecipes = new ArrayList<>();
         for (ListRecipesQuery.Item dbRecipe : dbRecipes) {
-            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.name(), dbRecipe.content(), dbRecipe.photo(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
+            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.name(), dbRecipe.content(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
             parsedRecipes.add(recipe);
         }
         return parsedRecipes;
@@ -509,7 +548,6 @@ public class AppSyncDb {
                 returnRecipe.setId(dbRec.id());
                 returnRecipe.setName(dbRec.name());
                 returnRecipe.setContent(dbRec.content());
-                returnRecipe.setPhoto(dbRec.photo());
                 returnRecipe.setCalories(dbRec.calories());
                 returnRecipe.setType(RecipeType.valueOf(dbRec.type()));
 
@@ -683,10 +721,10 @@ public class AppSyncDb {
                     return;
                 }
 
-                if(response.data().listRecipePhotos().items().size() == 0) {
-                    Log.e(methodName, "response.data().listRecipePhotos().items() is empty");
-                    if (onFailure != null)
-                        onFailure.run();
+                if(response.data().listRecipePhotos().items().size() == 0) { //user doesn't have any photos
+                    Log.d(methodName, "response.data().listRecipePhotos().items() is empty");
+                    if (onSuccess != null)
+                        onSuccess.run();
                     return;
                 }
 
@@ -810,7 +848,6 @@ public class AppSyncDb {
         CreateRecipeInput createRecipeInput = CreateRecipeInput.builder()
                 .name(recipe.getName())
                 .content(recipe.getContent())
-                .photo(recipe.getPhoto()) //remove later
                 .calories(recipe.getCalories())
                 .type(recipe.getType().toString())
                 .build();

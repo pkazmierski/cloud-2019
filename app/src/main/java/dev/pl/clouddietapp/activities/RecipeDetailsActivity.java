@@ -2,6 +2,7 @@ package dev.pl.clouddietapp.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -208,6 +209,8 @@ public class RecipeDetailsActivity extends BaseActivity {
                     } else {
                         Log.d("CreateRecipePhotoMutation", "Saving photo to DynamoDb completed: " + Objects.requireNonNull(response.data().createRecipePhoto()).toString());
                     }
+
+                    runOnUiThread(() -> ((Activity)ctx).recreate());
                 }
 
                 @Override

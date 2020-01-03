@@ -47,13 +47,13 @@ public class PhotoRemoverActivity extends BaseActivity {
         ctx = this;
         photoRemoverLinearLayout = findViewById(R.id.photoRemoverLinearLayout);
         final List<DatabasePhoto> databasePhotoList = new ArrayList<>();
-        Runnable onUserPhotoDownloadSuccess = () -> deleteUserPhotos(databasePhotoList);
+        Runnable onUserPhotoDownloadSuccess = () -> setView(databasePhotoList);
         Runnable onUserPhotoDownloadFailure = () -> runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Cannot download user photos", Toast.LENGTH_SHORT).show());
 
         Logic.appSyncDb.getPhotosForLoggedInUser(onUserPhotoDownloadSuccess, onUserPhotoDownloadFailure, databasePhotoList);
     }
 
-    private void deleteUserPhotos(final List<DatabasePhoto> databasePhotoList) {
+    private void setView(final List<DatabasePhoto> databasePhotoList) {
         for (DatabasePhoto databasePhoto : databasePhotoList) {
             final String localPath = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + databasePhoto;
