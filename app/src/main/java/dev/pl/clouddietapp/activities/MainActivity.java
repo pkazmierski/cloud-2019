@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity {
 //                Log.d(TAG, "upload user preferences: " + DataStore.getUserData().getPreferences().toString());
 //            });
 //
-//            Logic.appSyncDb.setUserData(afterSettingUserData, null, newUserData);
+//            Logic.appSyncDb.updateUserData(afterSettingUserData, null, newUserData);
 //        }
 //
 //        counter++;

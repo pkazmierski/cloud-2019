@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
+import com.amazonaws.mobile.client.results.SignInResult;
 import com.amazonaws.mobile.client.results.SignUpResult;
 import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import dev.pl.clouddietapp.R;
+import dev.pl.clouddietapp.data.DataStore;
+import dev.pl.clouddietapp.logic.Logic;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -220,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 switch (userStateDetails.getUserState()){
                     case SIGNED_IN:
                         finish();
-                        Intent i = new Intent(RegisterActivity.this, DishesActivity.class);
+                        Intent i = new Intent(RegisterActivity.this, RecipesActivity.class);
                         startActivity(i);
                         break;
                     case SIGNED_OUT:
@@ -321,10 +324,63 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                             final UserCodeDeliveryDetails details = signUpResult.getUserCodeDeliveryDetails();
                             Toast.makeText(getApplicationContext(),"Confirm sign-up with: " + details.getDestination(), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(),"Sign-up done.", Toast.LENGTH_SHORT).show();
-                            finish();
-                            Intent i = new Intent(RegisterActivity.this, DishesActivity.class);
-                            startActivity(i);
+                            Log.d(TAG, "sign-up: first step of registration for " + username);
+                            final String password = password1.getText().toString();
+
+                            AWSMobileClient.getInstance().signIn(username, password, null, new Callback<SignInResult>() {
+                                @Override
+                                public void onResult(final SignInResult signInResult) {
+                                    runOnUiThread(() -> {
+                                        Log.d(TAG, "Sign-in callback state: " + signInResult.getSignInState());
+                                        switch (signInResult.getSignInState()) {
+                                            case DONE:
+                                                Toast.makeText(getApplicationContext(),"Sign-in done.", Toast.LENGTH_SHORT).show();
+
+                                                DataStore.getUserData().setUsername(username);
+                                                Logic.initAppSync(getApplicationContext());
+
+                                                Runnable createUserDataSuccess = () -> {
+                                                    Log.d(TAG, "sign-up: created user data in DynamoDB");
+                                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(),"Sign-up done.", Toast.LENGTH_SHORT).show());
+                                                    Intent i = new Intent(RegisterActivity.this, RecipesActivity.class);
+                                                    startActivity(i);
+                                                };
+                                                Runnable createUserDataFailure = () -> Log.d(TAG, "sign-up: failed to create user data in DynamoDB");
+
+                                                Logic.appSyncDb.createUserData(createUserDataSuccess, createUserDataFailure);
+
+                                                break;
+                                            case PASSWORD_VERIFIER:
+                                                Toast.makeText(getApplicationContext(),"Enter correct password.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            case NEW_PASSWORD_REQUIRED:
+                                                Toast.makeText(getApplicationContext(),"Please confirm sign-in with new password.", Toast.LENGTH_SHORT).show();
+                                                break;
+                                            default:
+                                                Toast.makeText(getApplicationContext(),"Unsupported sign-in confirmation: " + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
+                                                break;
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            if (e.getClass().getSimpleName().equals("UserNotFoundException")){
+                                                Toast.makeText(getApplicationContext(),"User does not exist.", Toast.LENGTH_SHORT).show();
+                                            } else if (e.getClass().getSimpleName().equals("NotAuthorizedException")){
+                                                Toast.makeText(getApplicationContext(),"Incorrect username or password.", Toast.LENGTH_SHORT).show();
+                                            } else if (e.getClass().getSimpleName().equals("UserNotConfirmedException")){
+                                                Toast.makeText(getApplicationContext(),"User is not confirmed.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    Log.e(TAG, "Sign-in error", e);
+                                }
+                            });
+
+//                            finish();
                         }
                     }
                 });

@@ -49,6 +49,6 @@ public class PreferenceActivity extends BaseActivity {
 //                onlyVegetarianInputTxt.isChecked());
         newUserData.setPreferences(newUserPreferences);
 
-        Logic.appSyncDb.setUserData(afterPreferencesSetSuccess, afterPreferencesSetFailed, newUserData);
+        Logic.appSyncDb.updateUserData(afterPreferencesSetSuccess, afterPreferencesSetFailed, newUserData);
     }
 }

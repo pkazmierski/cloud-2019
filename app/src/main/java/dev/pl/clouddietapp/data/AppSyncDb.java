@@ -3,7 +3,9 @@ package dev.pl.clouddietapp.data;
 import android.content.Context;
 import android.util.Log;
 
+import com.amazonaws.amplify.generated.graphql.CreateRecipeMutation;
 import com.amazonaws.amplify.generated.graphql.CreateUserDataMutation;
+import com.amazonaws.amplify.generated.graphql.GetRecipeQuery;
 import com.amazonaws.amplify.generated.graphql.GetUserDataQuery;
 import com.amazonaws.amplify.generated.graphql.ListRecipesQuery;
 import com.amazonaws.amplify.generated.graphql.UpdateUserDataMutation;
@@ -13,6 +15,7 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +31,8 @@ import dev.pl.clouddietapp.models.Recipe;
 import dev.pl.clouddietapp.models.RecipeType;
 import dev.pl.clouddietapp.models.UserData;
 import dev.pl.clouddietapp.models.UserPreferences;
+import type.CreateRecipeInput;
 import type.CreateUserDataInput;
-import type.ModelIDFilterInput;
 import type.ModelIntFilterInput;
 import type.ModelRecipeFilterInput;
 import type.ModelStringFilterInput;
@@ -72,7 +75,7 @@ public class AppSyncDb {
 
                 userAttributes = result;
                 parseUserAttributes(ctx);
-                if(onSuccess != null)
+                if (onSuccess != null)
                     onSuccess.run();
             }
 
@@ -80,7 +83,7 @@ public class AppSyncDb {
             public void onError(Exception e) {
                 Log.e(TAG, "onError: " + e.getLocalizedMessage());
                 e.printStackTrace();
-                if(onFailure != null)
+                if (onFailure != null)
                     onFailure.run();
             }
 
@@ -255,31 +258,58 @@ public class AppSyncDb {
         GraphQLCall.Callback<GetUserDataQuery.Data> getUserDataCallback = new GraphQLCall.Callback<GetUserDataQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<GetUserDataQuery.Data> response) {
-                if(response.hasErrors()) {
+                if (response.hasErrors()) {
                     Log.e(TAG, "getUserData: " + response.errors());
-                    if(onFailure != null)
+                    if (onFailure != null)
                         onFailure.run();
                     return;
                 }
 
-//                DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
+                //DataStore.getUserData().setFridgeContents(parseFridgeContents(response.data()));
                 if (response.data().getUserData().maxDistanceToSupermarket() == null)
                     DataStore.getUserData().setPreferences(new UserPreferences(10));
                 else
                     DataStore.getUserData().setPreferences(new UserPreferences(response.data().getUserData().maxDistanceToSupermarket()));
 
                 List<Recipe> recommendedRecipes = new ArrayList<>();
+                Recipe rec1 = new Recipe();
+                Recipe rec2 = new Recipe();
+                Recipe rec3 = new Recipe();
+                Recipe rec4 = new Recipe();
+                Recipe rec5 = new Recipe();
+                recommendedRecipes.add(rec1);
+                recommendedRecipes.add(rec2);
+                recommendedRecipes.add(rec3);
+                recommendedRecipes.add(rec4);
+                recommendedRecipes.add(rec5);
 
-                Runnable gotRecommendedRecipes = () -> {
-                    DataStore.getUserData().setRecommendedRecipes(recommendedRecipes);
-                    if(onSuccess != null)
-                        onSuccess.run();
-                };
 
-                if(response.data().getUserData().recommendedDishes() != null) {
-                    getRecommendedRecipesFromIds(gotRecommendedRecipes, onFailure, response.data().getUserData().recommendedDishes(), recommendedRecipes);
+                if (response.data().getUserData().recommendedDishes() != null) {
+                    List<String> recDishes = response.data().getUserData().recommendedDishes();
+                    ResponseFetcher responseFetcher = response.fromCache() ? AppSyncResponseFetchers.CACHE_ONLY : AppSyncResponseFetchers.NETWORK_ONLY;
+                    for (int i = 0; i < 4; i++) {
+                        getRecipeById(null, null, recDishes.get(i), recommendedRecipes.get(i), responseFetcher);
+                    }
+
+                    Runnable setRec = () -> {//final setrec
+                        boolean cnt = true;
+                        while(cnt) {
+                            cnt = false;
+                            for (Recipe r : recommendedRecipes) {
+                                if(r.getId() == null || r.getId().isEmpty())
+                                    cnt = true;
+                            }
+                        }
+                        DataStore.getUserData().setRecommendedRecipes(recommendedRecipes);
+//                        Log.d(TAG, "fromcache: " + response.fromCache());
+                        if (onSuccess != null)
+                            onSuccess.run();
+                    };
+
+                    getRecipeById(setRec, null, recDishes.get(4), rec5, responseFetcher);
+
                 } else {
-                    if(onSuccess != null)
+                    if (onSuccess != null)
                         onSuccess.run();
                 }
             }
@@ -326,12 +356,11 @@ public class AppSyncDb {
                 .enqueue(createUserDataMutationCallback);
     }
 
-    public void setUserData(final Runnable onSuccess, final Runnable onFailure, UserData newUserData) {
+    public void updateUserData(final Runnable onSuccess, final Runnable onFailure, UserData newUserData) {
         GraphQLCall.Callback<UpdateUserDataMutation.Data> createUserDataMutationCallback = new GraphQLCall.Callback<UpdateUserDataMutation.Data>() {
             @Override
             public void onResponse(@Nonnull Response<UpdateUserDataMutation.Data> response) {
 
-                DataStore.setUserData(newUserData);
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -345,9 +374,18 @@ public class AppSyncDb {
             }
         };
 
+        List<String> reccomendedRecipesIds = null;
+        if (newUserData.getRecommendedRecipes() != null) {
+            reccomendedRecipesIds = new ArrayList<>();
+
+            for (Recipe rec : newUserData.getRecommendedRecipes()) {
+                reccomendedRecipesIds.add(rec.getId());
+            }
+        }
+
         UpdateUserDataInput createUserDataInput = UpdateUserDataInput.builder()
                 .id(DataStore.getUserData().getUsername())
-//                .fridgeContents(fridgeContentsToJson(newUserData.getFridgeContents()))
+                .recommendedDishes(reccomendedRecipesIds)
                 .maxDistanceToSupermarket(DataStore.getUserData().getPreferences().getMaxSupermarketDistance())
                 .build();
 
@@ -360,7 +398,7 @@ public class AppSyncDb {
     private ArrayList<Recipe> parseRecipes(List<ListRecipesQuery.Item> dbRecipes) {
         ArrayList<Recipe> parsedRecipes = new ArrayList<>();
         for (ListRecipesQuery.Item dbRecipe : dbRecipes) {
-            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.content(), dbRecipe.photos(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
+            Recipe recipe = new Recipe(dbRecipe.id(), dbRecipe.name(), dbRecipe.content(), dbRecipe.photos(), RecipeType.valueOf(dbRecipe.type()), dbRecipe.calories());
             parsedRecipes.add(recipe);
         }
         return parsedRecipes;
@@ -396,12 +434,16 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
-    public void getFilteredRecipes(final Runnable onSuccess, final Runnable onFailure, final RecipeType type, final int calories, final List<Recipe> filteredRecipeStorage) {
+    public void getFilteredRecipes(final Runnable onSuccess, final Runnable onFailure, final Runnable onEmptyArrayReceived, final RecipeType type, final int calories, final List<Recipe> filteredRecipeStorage) {
         GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
             @Override
             public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
                 assert response.data() != null;
                 assert response.data().listRecipes() != null;
+                if(response.data().listRecipes().items().size() == 0) {
+                    Log.d("getFilteredRecipes", type.toString() + ": no items");
+                    onEmptyArrayReceived.run();
+                }
 
                 filteredRecipeStorage.clear();
                 filteredRecipeStorage.addAll(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
@@ -430,28 +472,34 @@ public class AppSyncDb {
                 .enqueue(listRecipesQueryCallback);
     }
 
-    public void getRecommendedRecipesFromIds(final Runnable onSuccess, final Runnable onFailure, final List<String> recipeIds, final List<Recipe> filteredRecipeStorage) {
-        GraphQLCall.Callback<ListRecipesQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<ListRecipesQuery.Data>() {
+    private void getRecipeById(final Runnable onSuccess, final Runnable onFailure, final String recipeId, final Recipe returnRecipe, ResponseFetcher responseFetcher) {
+        GraphQLCall.Callback<GetRecipeQuery.Data> listRecipesQueryCallback = new GraphQLCall.Callback<GetRecipeQuery.Data>() {
             @Override
-            public void onResponse(@Nonnull Response<ListRecipesQuery.Data> response) {
-                assert response.data() != null;
-                assert response.data().listRecipes() != null;
-
-                if(response.hasErrors()) {
-                    Log.e(TAG, "getRecommendedRecipesFromIds: " + response.errors());
+            public void onResponse(@Nonnull Response<GetRecipeQuery.Data> response) {
+                if (response.hasErrors()) {
+                    Log.e(TAG, "getRecipeById: " + response.errors());
                     if (onFailure != null)
                         onFailure.run();
                     return;
                 }
 
-                if(response.data().listRecipes() == null || response.data().listRecipes().items() == null) {
-                    if(onFailure != null)
+                assert response.data() != null;
+                if (response.data().getRecipe() == null) {
+                    if (onFailure != null)
                         onFailure.run();
                     return;
                 }
 
-                filteredRecipeStorage.clear();
-                filteredRecipeStorage.addAll(parseRecipes(Objects.requireNonNull(Objects.requireNonNull(response.data().listRecipes()).items())));
+//                Log.d(TAG, "getRecipeById: " + response.data().getRecipe());
+
+                GetRecipeQuery.GetRecipe dbRec = response.data().getRecipe();
+
+                returnRecipe.setId(dbRec.id());
+                returnRecipe.setName(dbRec.name());
+                returnRecipe.setContent(dbRec.content());
+                returnRecipe.setPhotos(dbRec.photos());
+                returnRecipe.setCalories(dbRec.calories());
+                returnRecipe.setType(RecipeType.valueOf(dbRec.type()));
 
                 if (onSuccess != null)
                     onSuccess.run();
@@ -465,14 +513,36 @@ public class AppSyncDb {
             }
         };
 
-        ModelRecipeFilterInput modelRecipeFilterInput = ModelRecipeFilterInput.builder()
-                .id(ModelIDFilterInput.builder().between(recipeIds).build())
-                .build();
+//        if(recipeIds.size() != 5) {
+//            Log.e(TAG, "not enough recipe ids");
+//        }
+//
+//        ModelRecipeFilterInput modelRecipeFilterInput1 = ModelRecipeFilterInput.builder()
+//                .id(ModelIDFilterInput.builder().eq(recipeIds.get(1)).build())
+//                .build();
+//
+//        ModelRecipeFilterInput modelRecipeFilterInput2 = ModelRecipeFilterInput.builder()
+//                .id(ModelIDFilterInput.builder().eq(recipeIds.get(2)).build())
+//                .build();
+//
+//        ModelRecipeFilterInput modelRecipeFilterInput3 = ModelRecipeFilterInput.builder()
+//                .id(ModelIDFilterInput.builder().eq(recipeIds.get(3)).build())
+//                .build();
+//
+//        ModelRecipeFilterInput modelRecipeFilterInput4 = ModelRecipeFilterInput.builder()
+//                .id(ModelIDFilterInput.builder().eq(recipeIds.get(4)).build())
+//                .build();
+//
+//        List<ModelRecipeFilterInput> modelRecipeFilterInputs = new ArrayList<>();
+//        modelRecipeFilterInputs.add(modelRecipeFilterInput1);
+//        modelRecipeFilterInputs.add(modelRecipeFilterInput2);
+//        modelRecipeFilterInputs.add(modelRecipeFilterInput3);
+//        modelRecipeFilterInputs.add(modelRecipeFilterInput4);
 
-        appSyncClient.query(ListRecipesQuery.builder()
-                .filter(modelRecipeFilterInput)
+        appSyncClient.query(GetRecipeQuery.builder()
+                .id(recipeId)
                 .build())
-                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+                .responseFetcher(responseFetcher)
                 .enqueue(listRecipesQueryCallback);
     }
 
@@ -501,4 +571,34 @@ public class AppSyncDb {
 //                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
 //                .enqueue(listRecipesQueryCallback);
 //    }
+
+    public void createNewRecipe(Recipe recipe) {
+        GraphQLCall.Callback<CreateRecipeMutation.Data> createRecipeCallback = new GraphQLCall.Callback<CreateRecipeMutation.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<CreateRecipeMutation.Data> response) {
+                if (response.hasErrors())
+                    Log.e(TAG, "createNewRecipe: " + response.errors());
+                else if (response.data().createRecipe() != null)
+                    Log.d(TAG, "createNewRecipe success: " + response.data().toString());
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.e("ERROR", e.toString());
+            }
+        };
+
+        CreateRecipeInput createRecipeInput = CreateRecipeInput.builder()
+                .name(recipe.getName())
+                .content(recipe.getContent())
+                .photos(recipe.getPhotos()) //remove later
+                .calories(recipe.getCalories())
+                .type(recipe.getType().toString())
+                .build();
+
+        appSyncClient.mutate(CreateRecipeMutation.builder()
+                .input(createRecipeInput)
+                .build())
+                .enqueue(createRecipeCallback);
+    }
 }

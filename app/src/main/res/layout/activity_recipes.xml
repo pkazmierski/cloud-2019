@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize"
     android:id="@+id/dishes_layout"
-    tools:context=".activities.DishesActivity">
+    tools:context=".activities.RecipesActivity">
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -45,14 +45,17 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/regenerateRecommendationsBtn"
         android:layout_width="0dp"
         android:layout_height="64dp"
+        android:layout_margin="15dp"
+        android:background="@color/colorPrimary"
+        android:onClick="regenerateRecommendationsBtn"
         android:text="@string/re_generate_recommendations"
         android:textAllCaps="true"
-        android:background="@color/colorPrimary"
         android:textColor="@color/quantum_white_100"
-        android:layout_margin="15dp"
+        android:textSize="16sp"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

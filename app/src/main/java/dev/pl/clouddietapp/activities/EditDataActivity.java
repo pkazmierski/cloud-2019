@@ -1,6 +1,5 @@
 package dev.pl.clouddietapp.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -93,6 +92,12 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
                 Log.d(TAG, "userAttributesCallback onResult: " + result.toString());
 
                 userAttributes = result;
+                String locationString = userAttributes.get("custom:location");
+                assert locationString != null;
+                locationString = locationString.substring(10);
+                locationString = locationString.substring(0, locationString.length()-1);
+                String[] locSplit = locationString.split(",");
+                location = new LatLng(Double.valueOf(locSplit[0]), Double.valueOf(locSplit[1]));
 
                 runOnUiThread(() -> {
                     editDataSpinner.setSelection(getIndex(editDataSpinner, userAttributes.get("custom:physicalActivity")));
@@ -212,30 +217,9 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
     }
 
     public void editDataLocationBtn(View view) {
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-            }
-        } else {
-            // Permission has already been granted
-        }
-
-
-        Intent i = new Intent(this, PickLocationActivity.class);
+        Intent i = new Intent(this, LocationPermissionActivity.class);
         startActivityForResult(i, 1);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -250,8 +234,6 @@ public class EditDataActivity extends BaseActivity implements AdapterView.OnItem
             }
         }
     }
-
-
 
     public void saveBtnHandler(View view) {
         if (verifyData()) {

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,7 +87,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 Log.i(TAG, userStateDetails.getUserState().toString());
                 if (userStateDetails.getUserState() == UserState.SIGNED_IN) {
                     finish();
-                    Intent i = new Intent(ResetPasswordActivity.this, DishesActivity.class);
+                    Intent i = new Intent(ResetPasswordActivity.this, RecipesActivity.class);
                     startActivity(i);
                 } else {
                     reset();

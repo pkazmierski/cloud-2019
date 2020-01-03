@@ -63,8 +63,8 @@
     <string name="user_data">User data</string>
     <string name="max_distance_to_the_supermarket">Max distance to the supermarket</string>
     <string name="done">Done</string>
-    <string name="dish_name">Dish name</string>
-    <string name="dish_type">Dish type</string>
-    <string name="menu_dishes">Dishes</string>
-    <string name="re_generate_recommendations">Re-generate recommendations</string>
+    <string name="recipe_name">Recipe name</string>
+    <string name="recipe_type">Recipe type</string>
+    <string name="menu_recipes">Recipes</string>
+    <string name="re_generate_recommendations">Regenerate recommendations</string>
 </resources>

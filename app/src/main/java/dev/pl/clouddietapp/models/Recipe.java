@@ -5,7 +5,9 @@ import java.util.Objects;
 
 public class Recipe {
     private String id;
-//    private ArrayList<Food> foodList;
+
+    //    private ArrayList<Food> foodList;
+    private String name;
     private String content;
     private List<String> photos;
     private RecipeType type;
@@ -17,9 +19,14 @@ public class Recipe {
 //        this.content = content;
 //    }
 
+    public Recipe() {
 
-    public Recipe(String id, String content, List<String> photos, RecipeType type, int calories) {
+    }
+
+
+    public Recipe(String id, String name, String content, List<String> photos, RecipeType type, int calories) {
         this.id = id;
+        this.name = name;
         this.content = content;
         this.photos = photos;
         this.type = type;
@@ -32,6 +39,14 @@ public class Recipe {
         this.photos = null;
         this.type = type;
         this.calories = calories;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<String> getPhotos() {
