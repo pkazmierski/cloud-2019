@@ -113,6 +113,17 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                 }
             }
         });
+
+        String locationString = DataStore.getUserData().getLocation();
+        assert locationString != null;
+        locationString = locationString.substring(10);
+        locationString = locationString.substring(0, locationString.length()-1);
+        String[] locSplit = locationString.split(",");
+        LatLng latLng = new LatLng(Double.valueOf(locSplit[0]), Double.valueOf(locSplit[1]));
+
+        mLastKnownLocation = new Location("userData");
+        mLastKnownLocation.setLatitude(latLng.latitude);
+        mLastKnownLocation.setLongitude(latLng.longitude);
     }
 
 
@@ -192,7 +203,7 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
-                            mLastKnownLocation = task.getResult();
+                            //mLastKnownLocation = task.getResult();
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                             } else {
@@ -207,7 +218,18 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback {
                                         if (locationResult == null) {
                                             return;
                                         }
-                                        mLastKnownLocation = locationResult.getLastLocation();
+                                        //mLastKnownLocation = locationResult.getLastLocation();
+                                        String locationString = DataStore.getUserData().getLocation();
+                                        assert locationString != null;
+                                        locationString = locationString.substring(10);
+                                        locationString = locationString.substring(0, locationString.length()-1);
+                                        String[] locSplit = locationString.split(",");
+                                        LatLng latLng = new LatLng(Double.valueOf(locSplit[0]), Double.valueOf(locSplit[1]));
+
+                                        mLastKnownLocation = new Location("userData");
+                                        mLastKnownLocation.setLatitude(latLng.latitude);
+                                        mLastKnownLocation.setLongitude(latLng.longitude);
+
                                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                                         mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
                                     }
